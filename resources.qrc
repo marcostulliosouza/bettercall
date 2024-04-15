@@ -1,0 +1,57 @@
+<RCC>
+    <qresource>
+        <file alias="add_helper.png">images/add_helper.png</file>
+        <file alias="call.png">images/call.png</file>
+        <file alias="calls.png">images/calls.png</file>
+        <file alias="calls_report.png">images/calls_report.png</file>
+        <file alias="calls_report_2.png">images/calls_report_2.png</file>
+        <file alias="close_call.png">images/close_call.png</file>
+        <file alias="detailed_call_report.png">images/detailed_call_report.png</file>
+        <file alias="files.png">images/files.png</file>
+	<file alias="icon.png">images/icon.png</file>
+	<file alias="input_categories.png">images/input_categories.png</file>
+        <file alias="inventory.png">images/inventory.png</file>
+	<file alias="login_icon.png">images/login_icon.png</file>
+	<file alias="prod_plan.png">images/prod_plan.png</file>
+	<file alias="prod_plan_2.png">images/prod_plan_2.png</file>
+        <file alias="question.png">images/question.png</file>
+	<file alias="quit.png">images/quit.png</file>
+	<file alias="quit2.png">images/quit2.png</file>
+	<file alias="red_icon.png">images/red_icon.png</file>
+	<file alias="switch_user.png">images/switch_user.png</file>
+	<file alias="warning_icon.png">images/warning_icon.png</file>
+	<file alias="warning_icon2.png">images/warning_icon2.png</file>
+	<file alias="yellow_icon.png">images/yellow_icon.png</file>
+	<file alias="left.png">images/left.png</file>
+	<file alias="right.png">images/right.png</file>
+	<file alias="lock.png">images/lock.png</file>
+	<file alias="unlock.png">images/unlock.png</file>
+	<file alias="invoice.png">images/invoice.png</file>
+	<file alias="invoices2.png">images/invoices2.png</file>
+	<file alias="download.png">images/download.png</file>
+	<file alias="client.png">images/client.png</file>
+	<file alias="jig.png">images/jig.png</file>
+	<file alias="newjig.png">images/newjig.png</file>
+	<file alias="green_icon.png">images/green_icon.png</file>
+	<file alias="blocked.png">images/blocked.png</file>
+	<file alias="doc_ok.png">images/doc_ok.png</file>
+	<file alias="doc_nok.png">images/doc_nok.png</file>
+	<file alias="cam.png">images/cam.png</file>
+	<file alias="scanner.png">images/scanner.png</file>
+	<file alias="receive_equipment.png">images/receive_equipment.png</file>
+	<file alias="send_equipment.png">images/send_equipment.png</file>
+	<file alias="information.png">images/information.png</file>
+	<file alias="delete.png">images/delete.png</file>
+	<file alias="chain.png">images/chain.png</file>
+	<file alias="maintenance.png">images/maintenance.png</file>
+	<file alias="up.png">images/up.png</file>
+	<file alias="down.png">images/down.png</file>
+	<file alias="edit.png">images/edit.png</file>
+	<file alias="formulario.png">images/formulario.png</file>
+	<file alias="grey_icon.png">images/grey_icon.png</file>
+	<file alias="blue_icon.png">images/blue_icon.png</file>
+	<file alias="engineer_call.png">images/engineer_call.png</file>
+	<file alias="save.png">images/save.png</file>
+	<file alias="cancel.png">images/cancel.png</file>
+	</qresource>
+</RCC>
