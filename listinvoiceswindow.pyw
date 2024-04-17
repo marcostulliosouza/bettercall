@@ -452,7 +452,7 @@ class ListInvoicesWindow(QMdiSubWindow):
         # --> Data de Cadastro #
         sendingDateLabel = MyQLabel("Data de Cadastro: ")
         self.fromDateField = MyQDateEdit()
-        self.fromDateField.setDate(QDate(2017, 10, 20))
+        self.fromDateField.setDate(QDate.currentDate().addMonths(-1))
         
         untilLabel = MyQLabel(" até ")
         untilLabel.setMinimumWidth(26)

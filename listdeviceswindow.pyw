@@ -518,6 +518,10 @@ class ListDevicesWindow(QMdiSubWindow):
         filterButton = MyQPushButton(" Filtrar ")
         clearFilterButton = MyQPushButton(" Limpar ")
 
+        # --> Conectar o evento returnPressed dos campos de filtro ao método filterTable
+        self.deviceIdField.returnPressed.connect(self.filterTable)
+        self.deviceDescriptionField.returnPressed.connect(self.filterTable)
+        self.deviceSAPCodeField.returnPressed.connect(self.filterTable)
 
         # --> Tabela de Dispositivos
         self.devicesTable = MyQTableWidget()
@@ -736,51 +740,46 @@ class ListDevicesWindow(QMdiSubWindow):
             self.invoiceComboBox.clear()
 
 ###############################################################################################################################################################################
-    
+
     def filterTable(self):
         """
-        This method is called when the button "Filtrar" is clicked, creating the fields list
-        that will be passed to the updateDevicesTable
+        This method is called when the Enter key is pressed on any of the text input fields,
+        creating the fields list that will be passed to the updateDevicesTable
         """
         self.filteringFields = []
 
-        if  self.deviceIdField.text():
-            self.filteringFields.append("LPAD(dis_id, 6, '0') LIKE '%" + self.deviceIdField.text() + "%'")
+        if self.deviceIdField.text():
+            self.filteringFields.append(f"LPAD(dis_id, 6, '0') LIKE '%{self.deviceIdField.text()}%'")
 
         if self.deviceDescriptionField.text():
-            self.filteringFields.append("dis_descricao LIKE '%" + self.deviceDescriptionField.text() + "%'")
-        
+            self.filteringFields.append(f"dis_descricao LIKE '%{self.deviceDescriptionField.text()}%'")
+
         if self.deviceSAPCodeField.text():
-            self.filteringFields.append("dis_codigo_sap LIKE '%" + self.deviceSAPCodeField.text() + "%'")
-    
+            self.filteringFields.append(f"dis_codigo_sap LIKE '%{self.deviceSAPCodeField.text()}%'")
+
         if self.deviceStatusComboBox.currentIndex() > 0:
-            self.filteringFields.append("dis_status = '" + str(self.deviceStatusComboBox.itemData(self.deviceStatusComboBox.currentIndex())) + "'")
+            status = str(self.deviceStatusComboBox.itemData(self.deviceStatusComboBox.currentIndex()))
+            self.filteringFields.append(f"dis_status = '{status}'")
 
         ownerListAux = []
         if self.clientPropertyCheckBox.isChecked():
             if self.clientComboBox.currentIndex() <= 0:
                 ownerListAux.append("dis_cliente IS NOT NULL")
             else:
-                ownerListAux.append("dis_cliente = '" + str(self.clientComboBox.itemData(self.clientComboBox.currentIndex())) + "'")
+                client_id = str(self.clientComboBox.itemData(self.clientComboBox.currentIndex()))
+                ownerListAux.append(f"dis_cliente = '{client_id}'")
 
             if self.invoiceComboBox.currentIndex() > 0:
-                self.filteringFields.append("ese_nota_fiscal_entrada = '" + str(self.invoiceComboBox.itemData(self.invoiceComboBox.currentIndex())) + "'")
-                
-                
+                invoice = str(self.invoiceComboBox.itemData(self.invoiceComboBox.currentIndex()))
+                self.filteringFields.append(f"ese_nota_fiscal_entrada = '{invoice}'")
+
         if self.himixPropertyCheckBox.isChecked():
             ownerListAux.append("dis_cliente IS NULL")
 
-
         self.filteringFields.append("(" + " OR ".join(ownerListAux) + ")")
 
-        
-        
-        if len(self.filteringFields):
-            self.isFiltering = True
-        else:
-            self.isFiltering = False
+        self.isFiltering = bool(self.filteringFields)
 
-       
         self.updateDevicesTable()
 
 ###############################################################################################################################################################################
