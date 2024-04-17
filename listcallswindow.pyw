@@ -184,7 +184,6 @@ class ListCallsWindow(QMdiSubWindow):
         self.loggedUser = parent.loggedUser
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(Qt.SubWindow | Qt.WindowMinimizeButtonHint | Qt.WindowCloseButtonHint)
-        self.setMinimumSize(QSize(1300, 420))
 
         self.indicators = callscontainer.CallIndicators()
         self.userAnsweringCall = False
