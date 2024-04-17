@@ -118,7 +118,7 @@ class MyQDeviceImageButton(QPushButton):
         self.deviceImageExtension = deviceImageExtension
         
         self.setCursor(Qt.PointingHandCursor)
-        self.setIcon(QIcon(":/cam.png"))
+        self.setIcon(QIcon("images/cam.png"))
         self.setIconSize(QSize(25, 25))
 
         self.clicked.connect(self.displayDeviceImage)
@@ -186,6 +186,37 @@ class MyQFilterComboBox(QComboBox):
         self.lineEdit().textEdited.connect(self.pFilterModel.setFilterFixedString)
         self.lineEdit().textEdited.connect(self.textToUpper)
         self.myCompleter.activated.connect(self.setTextIfCompleterIsClicked)
+
+
+    """
+    Adicionado a funcionalidade de selecionar itens de uma listbox com o teclado e enter;
+    """
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key_Enter, Qt.Key_Return):
+            text = self.currentText()
+            index = self.findText(text)
+            if index != -1:
+                self.setCurrentIndex(index)
+            return
+        elif event.key() == Qt.Key_Up:
+            if self.currentIndex() > 0:
+                self.setCurrentIndex(self.currentIndex() - 1)
+        elif event.key() == Qt.Key_Down:
+            if self.currentIndex() < self.count() - 1:
+                self.setCurrentIndex(self.currentIndex() + 1)
+        else:
+            super(MyQFilterComboBox, self).keyPressEvent(event)
+
+    def setTextIfCompleterIsClicked(self, text):
+        if text:
+            index = self.findText(text)
+            if index != -1:
+                self.setCurrentIndex(index)
+    def wheelEvent(self, event):
+        if event.angleDelta().y() > 0:
+            self.setCurrentIndex(max(0, self.currentIndex() - 1))
+        else:
+            self.setCurrentIndex(min(self.count() - 1, self.currentIndex() + 1))
 
 ###############################################################################################################################################################################
 
@@ -488,8 +519,8 @@ class MyQTableWidget(QTableWidget):
 
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
-###############################################################################################################################################################################
 
+###############################################################################################################################################################################
 
 class ListMaintenancesWindow(QMdiSubWindow):
     """
@@ -512,8 +543,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
         self.devicesList = devicescontainer.DevicesContainer()
 
         self.maintenanceLogsList = maintenancelogscontainer.MaintenanceLogsContainer()
-        
-        
+
         self.isFiltering = False
         self.filteringFields = []
 
@@ -552,7 +582,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
 
         openingDatetime = MyQLabel("Última Manutenção: ")
                         
-        self.fromDateField = MyQDateEdit(QDate(2017, 10, 20))
+        self.fromDateField = MyQDateEdit(QDate.currentDate().addYears(-1))
         
         untilLabel = QLabel(" até ")
         untilLabel.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -567,7 +597,6 @@ class ListMaintenancesWindow(QMdiSubWindow):
 
         # --> Propriedade do cliente #
         self.clientComboBox = MyQFilterComboBox()
-
         self.populateClientComboBox()
 
         # --> Product Combobox #
@@ -760,7 +789,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
                 messageBox.setText(message)
                 messageBox.setWindowTitle("Erro!")
                 messageBox.setIcon(QMessageBox.Critical)
-                messageBox.setWindowIcon(QIcon(":/warning_icon.png"))
+                messageBox.setWindowIcon(QIcon("images/warning_icon.png"))
                 messageBox.exec_()
                 return
 
@@ -916,10 +945,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
         
         if self.productComboBox.currentIndex() > 0:
             self.filteringFields.append("vdp_produto = '" + str(self.productComboBox.itemData(self.productComboBox.currentIndex())) + "'")
-                
 
-        
-                
         maintenanceTypeAux = []
         if self.passedDaysCheckBox.isChecked():
             maintenanceTypeAux.append("dim_tipo_intervalo = 'DIA'")
@@ -951,7 +977,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
             place, cause = error.args
 
             message = "Falha em: " + place + "\nErro: " +cause
-        
+
             messageBox = QMessageBox()
             messageBox.setText(message)
             messageBox.setWindowTitle("Erro!")
@@ -960,7 +986,6 @@ class ListMaintenancesWindow(QMdiSubWindow):
             messageBox.exec_()
             self.parent.close()
             return
-
 
         self.maintenancesTable.clearContents()
         self.maintenancesTable.setRowCount(len(self.devicesList))
@@ -978,26 +1003,26 @@ class ListMaintenancesWindow(QMdiSubWindow):
             # --> Icone #
             deviceMaintenanceStatusIcon = QLabel()
             deviceHasImageIcon = QLabel()
-            
+
             if device.devicePercentageMaintenance <= 70:
                 deviceMaintenanceStatusIcon.setPixmap(QIcon(":/green_icon.png").pixmap(QSize(30,30)))
-                
+
             elif device.devicePercentageMaintenance <= 90:
                 deviceMaintenanceStatusIcon.setPixmap(QIcon(":/yellow_icon.png").pixmap(QSize(30,30)))
 
             else:
                 deviceMaintenanceStatusIcon.setPixmap(QIcon(":/red_icon.png").pixmap(QSize(30,30)))
-                
+
             deviceMaintenanceStatusIcon.setToolTip(str(device.devicePercentageMaintenance).replace(".", ",") + " %")
 
-                
+
             self.maintenancesTable.setCellWidget(row, 0, deviceMaintenanceStatusIcon)
 
             if device.deviceHasImage == 1 and device.deviceImageExtension:
-                
+
                 deviceImageButton = MyQDeviceImageButton(device.deviceId, device.deviceImageExtension, self)
                 self.maintenancesTable.setCellWidget(row, 1, deviceImageButton)
-          
+
             # --> Identificação do Dispositivo #
             item = QTableWidgetItem(str(device.deviceId).zfill(6))
             item.setData(Qt.UserRole, int(device.deviceId))
@@ -1020,7 +1045,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
             # --> Última Manutenção
             item = QTableWidgetItem(device.deviceNextMaintenance)
             self.maintenancesTable.setItem(row, 6, item)
-       
+
     
 ###############################################################################################################################################################################
 
