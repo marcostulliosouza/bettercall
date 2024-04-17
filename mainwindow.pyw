@@ -245,7 +245,7 @@ class MainWindow(QMainWindow):
 
         # --> Relatorios->Pesquisa de Indicador #
         self.reports_indicatorSearchAction = QAction("Pesquisa de Indicador", self)
-        self.reports_indicatorSearchAction.setIcon(QIcon("images/detailed_call_report.png"))
+        self.reports_indicatorSearchAction.setIcon(QIcon(":/detailed_call_report.png"))
         self.reports_indicatorSearchAction.setShortcut("Ctrl+I")
         self.reports_indicatorSearchAction.setToolTip("Pesquisa de Indicador")
         self.reports_indicatorSearchAction.setStatusTip("Pesquisa de Indicador")
