@@ -235,6 +235,13 @@ class MainWindow(QMainWindow):
         self.reports_callsReportAction.setStatusTip("Relatório de Chamados")
         self.reports_callsReportAction.triggered.connect(self.showCallsReportSubWindow)
 
+        # --> Relatorios->Relatório de Manutenção Preventiva #
+        self.reports_indicatorSearchAction = QAction("Relatório de Manutenção Preventiva", self)
+        self.reports_indicatorSearchAction.setIcon(QIcon("images/detailed_call_report.png"))
+        self.reports_indicatorSearchAction.setShortcut("Ctrl+I")
+        self.reports_indicatorSearchAction.setToolTip("Pesquisa de Indicador")
+        self.reports_indicatorSearchAction.setStatusTip("Pesquisa de Indicador")
+        self.reports_indicatorSearchAction.triggered.connect(self.showIndicatorSearchSubWindow)
 
         # --> Relatorios->Pesquisa de Indicador #
         self.reports_indicatorSearchAction = QAction("Pesquisa de Indicador", self)
