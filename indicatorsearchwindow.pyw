@@ -41,7 +41,6 @@ class MyQDateEdit(QDateEdit):
 
     def __init__(self, parent=None):
         super(MyQDateEdit, self).__init__(parent)
-
         self.setDate(QDate.currentDate().addDays(-1))
         self.setMaximumDate(QDate.currentDate().addDays(-1))
         self.setFixedWidth(80)
@@ -156,10 +155,12 @@ class IndicatorSearchWindow(QMdiSubWindow):
         
         # --> Begin Date #
         self.dateIndicatorFieldBegin = MyQDateEdit()
+        self.dateIndicatorFieldBegin.setDate(QDate.currentDate().addMonths(-1).addDays(-1))
         
         
         # --> End Date #
         self.dateIndicatorFieldEnd = MyQDateEdit()
+        self.dateIndicatorFieldEnd.setDate(QDate.currentDate().addDays(-1))
         
         self.searchButton = QPushButton( "Buscar" )
         self.searchButton.setFixedWidth(90)
