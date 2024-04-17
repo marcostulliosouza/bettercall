@@ -171,11 +171,11 @@ class CloseCallWindow(QDialog):
         self.actionTakenDescription.setCurrentCharFormat(self.textFormat)
         
         textLength = len(self.actionTakenDescription.toPlainText())
-        if textLength <= 200:
-           self.charCounter.setText(str(200 - textLength))
+        if textLength <= 1000:
+           self.charCounter.setText(str(1000 - textLength))
         else:
             text = self.actionTakenDescription.toPlainText()
-            self.actionTakenDescription.setPlainText(text[:200])
+            self.actionTakenDescription.setPlainText(text[:1000])
             cursor = self.actionTakenDescription.textCursor()
             cursor.setPosition(textLength - 1)
             self.actionTakenDescription.setTextCursor(cursor)
