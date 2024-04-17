@@ -326,7 +326,7 @@ class CallsReportWindow(QMdiSubWindow):
 
         openingDatetime = MyQLabel("Data de Abertura: ")
                         
-        self.fromDateField = MyQDateEdit(QDate(2021, 10, 20))
+        self.fromDateField = MyQDateEdit(QDate.currentDate().addDays(-1))
         
         untilLabel = QLabel(" até ")
         untilLabel.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
