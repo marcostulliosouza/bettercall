@@ -45,7 +45,7 @@ class MyQTableWidget(QTableWidget):
     """
     def __init__(self, parent=None):
         super(MyQTableWidget, self).__init__(parent)
-        self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustIgnored)
+        self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.setAlternatingRowColors(True)
         self.setAutoFillBackground(True)
         self.setEditTriggers(QTableWidget.NoEditTriggers)
