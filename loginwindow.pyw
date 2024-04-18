@@ -58,7 +58,7 @@ class LoginWindow(QDialog):
         loginLabel.setFont(boldFont)
         
         self.loginField = QLineEdit()
-        self.loginField.setMinimumSize(200, 0)
+        self.loginField.setMinimumSize(300, 0)
         loginLabel.setBuddy(self.loginField)
         if self.settings.value("login/saveData", type=bool):
             self.loginField.setText(self.settings.value("login/username"))
@@ -83,7 +83,7 @@ class LoginWindow(QDialog):
 
         loginButton = QPushButton("Entrar")
         loginButton.setCursor(QCursor(Qt.PointingHandCursor))
-        
+
         cancelButton = QPushButton("Cancelar")
         cancelButton.setCursor(QCursor(Qt.PointingHandCursor))
         

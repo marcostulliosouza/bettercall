@@ -94,7 +94,6 @@ class Call(object):
              ]
         
         querySuccess, queryResult = myDBConnection.selectQuery(fields, tables, where)
-
         if not querySuccess:
             raise DatabaseConnectionError("Durante a atualização da duração do Chamado.",
                                           "Falha ao tentar executar a consulta no banco.\nContate o administrador do sistema.")
@@ -704,7 +703,7 @@ class CallContainer(object):
         myDBConnection = DBConnection()
 
         # --> clear the data structure to load the new information about the calls #
-        
+
         fields = [
                 "cha_id",
                 "cha_operador",
@@ -725,7 +724,7 @@ class CallContainer(object):
                 "cha_data_hora_atendimento",
                 "cha_data_hora_termino"
                 ]
-            
+
         tables = [
             ("chamados", "", ""),
             ("atendimentos_chamados", "LEFT", "cha_id = atc_chamado"),
@@ -740,7 +739,7 @@ class CallContainer(object):
             "(cha_status = 1 OR cha_status = 2)",
             "atc_data_hora_termino IS NULL"
             ]
-  
+
         groupby = ["cha_id"]
 
         orderby = [
@@ -748,7 +747,7 @@ class CallContainer(object):
             "duracao_total DESC",
             "duracao_atendimento DESC"
            ]
-        
+
 
         querySuccess, queryResult = myDBConnection.selectQuery(fields, tables, where, groupby, None, orderby)
 
