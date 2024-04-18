@@ -34,7 +34,12 @@ from myExceptions import *
 import callscontainer
 import callwindow
 
-__version__ = "2.0.0"
+#2024 -> adicionado função de disparar email caso haja atraso de chamado
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+__version__ = "2.0.1"
 
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
@@ -184,6 +189,8 @@ class ListCallsWindow(QMdiSubWindow):
         self.loggedUser = parent.loggedUser
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(Qt.SubWindow | Qt.WindowMinimizeButtonHint | Qt.WindowCloseButtonHint)
+
+        self.emailSentForCalls = set()  # Conjunto para rastrear os IDs das chamadas para as quais o e-mail já foi enviado
 
         self.indicators = callscontainer.CallIndicators()
         self.userAnsweringCall = False
@@ -517,12 +524,19 @@ class ListCallsWindow(QMdiSubWindow):
             item.setData(Qt.UserRole, int(call.callId))
             item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             item.setFont(fontStyle)
-            if call.totalDuration and call.totalDuration > 30:
+            if call.totalDuration is not None and call.totalDuration > 30:
                 item.setForeground(Qt.red)
-            elif call.totalDuration and call.totalDuration < 0:
+            elif call.totalDuration is not None and call.totalDuration < 0:
                 item.setForeground(Qt.blue)
                 
             self.openedCallsTable.setItem(row, 1, item)
+
+            # --> Verifica se o chamado dentro do plano
+            # está mais de 30 minutos aberto e não foi atendido para disparar email
+            # if call.totalDuration is not None and call.totalDuration > 30:
+            #     if call.callId not in self.emailSentForCalls:
+            #         self.sendEmailLateCalls(call)  # Aqui passamos o objeto 'call' como argumento
+            #         self.emailSentForCalls.add(call.callId)
 
             # --> Duração Atendimento #
             if call.status != "ABERTO":
@@ -564,6 +578,40 @@ class ListCallsWindow(QMdiSubWindow):
             self.openedCallsTable.setItem(row, 9, item)
 
             self.openedCallsTable.setRowHeight(row, 40)
+
+
+###############################################################################################################################################################################
+
+    def sendEmailLateCalls(self, call):
+        # Configurações do servidor SMTP do Outlook (Office 365)
+        smtp_server = 'smtp.office365.com'
+        smtp_port = 587  # A porta padrão para TLS (STARTTLS)
+        smtp_username = 'marcos.souza@hi-mix.com.br'
+        smtp_password = '00@So@82'
+
+        from_addr = 'marcos.souza@hi-mix.com.br'
+        to_addrs = ['marcostullio.s@gmail.com']
+
+        # Criar uma mensagem multipart (texto e HTML)
+        message = MIMEMultipart()
+        message['From'] = from_addr
+        message['To'] = ', '.join(to_addrs)
+        message['Subject'] = 'Aviso de Atraso no Atendimento de Chamado de Teste'
+
+        # Adicionar corpo de texto ao e-mail, usando os atributos do objeto 'call'
+        message.attach(MIMEText(f'Prezados,\n\nInformo que o chamado referente ao teste do produto '
+                                f'{call.product} do cliente {call.client} ainda não foi atendido '
+                                f'e está em aberto há {call.totalDuration} horas. \n\nAtenciosamente,', 'plain'))
+        # Conectar ao servidor SMTP
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Ativar o TLS (STARTTLS)
+        server.login(smtp_username, smtp_password)
+
+        # Enviar e-mail
+        server.sendmail(from_addr, to_addrs, message.as_string())
+
+        # Encerrar a conexão com o servidor
+        server.quit()
 
 
 ###############################################################################################################################################################################
