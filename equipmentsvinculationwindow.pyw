@@ -733,7 +733,7 @@ class EquipmentsVinculationWindow(QMdiSubWindow):
         """
 
         try:
-            self.activeClients.loadClientsFromAnalyst(self.loggedUser["id"], True)
+            self.activeClients.loadActiveClients() #carregar todos os clientes ativos afim de habilitar relacionar produto com dispositivo
         except DatabaseConnectionError as error:
             place, cause = error.args
 
