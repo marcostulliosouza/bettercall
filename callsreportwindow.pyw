@@ -239,13 +239,14 @@ class MyQTableWidget(QTableWidget):
         self.horizontalHeader().setStyleSheet(tableStylesheet)
 
         # --> Create the Items for the headers #
-        self.setColumnCount(10)
+        self.setColumnCount(11)
         
         openingDate = QTableWidgetItem("Data de Abertura")
         totalDuration = QTableWidgetItem("Duração Total")
         answerDuration = QTableWidgetItem("Atendimento")
         openedBy = QTableWidgetItem("Criado Por")
         callType = QTableWidgetItem("Tipo de Chamado")
+        callLocal = QTableWidgetItem("Local")
         client = QTableWidgetItem("Cliente")
         product = QTableWidgetItem("Produto")
         status = QTableWidgetItem("Status")
@@ -258,22 +259,24 @@ class MyQTableWidget(QTableWidget):
         self.setHorizontalHeaderItem(2, answerDuration)
         self.setHorizontalHeaderItem(3, openedBy)
         self.setHorizontalHeaderItem(4, callType)
-        self.setHorizontalHeaderItem(5, client)
-        self.setHorizontalHeaderItem(6, product)
-        self.setHorizontalHeaderItem(7, status)
-        self.setHorizontalHeaderItem(8, detractor)
-        self.setHorizontalHeaderItem(9, support)
+        self.setHorizontalHeaderItem(5, callLocal)
+        self.setHorizontalHeaderItem(6, client)
+        self.setHorizontalHeaderItem(7, product)
+        self.setHorizontalHeaderItem(8, status)
+        self.setHorizontalHeaderItem(9, detractor)
+        self.setHorizontalHeaderItem(10, support)
 
         self.horizontalHeader().resizeSection(0, 120)
         self.horizontalHeader().resizeSection(1, 100)
         self.horizontalHeader().resizeSection(2, 100)
         self.horizontalHeader().resizeSection(3, 120)
         self.horizontalHeader().resizeSection(4, 130)
-        self.horizontalHeader().resizeSection(5, 150)
+        self.horizontalHeader().resizeSection(5, 100)
         self.horizontalHeader().resizeSection(6, 150)
-        self.horizontalHeader().resizeSection(7, 100)
-        self.horizontalHeader().resizeSection(8, 200)
+        self.horizontalHeader().resizeSection(7, 150)
+        self.horizontalHeader().resizeSection(8, 100)
         self.horizontalHeader().resizeSection(9, 200)
+        self.horizontalHeader().resizeSection(10, 200)
 
 
 ###############################################################################################################################################################################
@@ -768,27 +771,30 @@ class CallsReportWindow(QMdiSubWindow):
             item = QTableWidgetItem(call.callType)
             self.callsTable.setItem(row, 4, item)
 
+            # --> Call Local #
+            item = QTableWidgetItem(call.location)
+            self.callsTable.setItem(row, 5, item)
 
             # --> Client #
             item = QTableWidgetItem(call.client)
-            self.callsTable.setItem(row, 5, item)
+            self.callsTable.setItem(row, 6, item)
 
             # --> Product #
             item = QTableWidgetItem(call.product)
-            self.callsTable.setItem(row, 6, item)
+            self.callsTable.setItem(row, 7, item)
 
             # --> Status #
             item = QTableWidgetItem(call.status)
-            self.callsTable.setItem(row, 7, item)
+            self.callsTable.setItem(row, 8, item)
 
             # --> Detractor #
             item = QTableWidgetItem(call.detractor)
-            self.callsTable.setItem(row, 8, item)
+            self.callsTable.setItem(row, 9, item)
 
             # --> Responsible #
             item = QTableWidgetItem(call.support)
             
-            self.callsTable.setItem(row, 9, item)
+            self.callsTable.setItem(row, 10, item)
 
 
 ###############################################################################################################################################################################
@@ -853,16 +859,24 @@ class CallsReportWindow(QMdiSubWindow):
         
         reportPath = QFileDialog.getExistingDirectory(self, "Selecione o local onde o relatório será salvo", "/home", QFileDialog.ShowDirsOnly)
         if reportPath:
-            report = callscontainer.CallsWorksheetReport(reportPath)
-            report.generateReport(self.isFiltering, self.filteringFields)
+            try:
+                report = callscontainer.CallsWorksheetReport(reportPath)
+                report.generateReport(self.isFiltering, self.filteringFields)
 
-            messageBox = QMessageBox()
-            messageBox.setIcon(QMessageBox.Information)
-            messageBox.setWindowIcon(QIcon(":/warning_icon.png"))
-            messageBox.setWindowTitle("Sucesso!")
-            messageBox.setText("Relatório salvo com sucesso.")
+                messageBox = QMessageBox()
+                messageBox.setIcon(QMessageBox.Information)
+                messageBox.setWindowIcon(QIcon(":/warning_icon.png"))
+                messageBox.setWindowTitle("Sucesso!")
+                messageBox.setText("Relatório salvo com sucesso.")
                     
-            messageBox.exec_()
+                messageBox.exec_()
+            except:
+                messageBox = QMessageBox()
+                messageBox.setWindowTitle("Falha ao salvar!")
+                messageBox.setIcon(QMessageBox.Critical)
+                messageBox.setText(
+                    "Ocorreu um erro ao tentar salvar o relatório. Entre em contato com o administrador do sistema.")
+                messageBox.exec_()
         
 ###############################################################################################################################################################################
 

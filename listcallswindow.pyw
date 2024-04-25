@@ -94,7 +94,7 @@ class MyQTableWidget(QTableWidget):
 
         # --> Create the Items for the table headers #
        
-        self.setColumnCount(10)
+        self.setColumnCount(11)
 
         
         iconInThePlan = QTableWidgetItem(" ")
@@ -102,6 +102,7 @@ class MyQTableWidget(QTableWidget):
         answerDuration = QTableWidgetItem("Atendimento")
         createdBy = QTableWidgetItem("Criado Por")
         callType = QTableWidgetItem("Tipo de Chamado")
+        callLocal = QTableWidgetItem("Local")
         client = QTableWidgetItem("Cliente")
         product = QTableWidgetItem("Produto")
         status = QTableWidgetItem("Status")
@@ -114,22 +115,24 @@ class MyQTableWidget(QTableWidget):
         self.setHorizontalHeaderItem(2, answerDuration)
         self.setHorizontalHeaderItem(3, createdBy)
         self.setHorizontalHeaderItem(4, callType)
-        self.setHorizontalHeaderItem(5, client)
-        self.setHorizontalHeaderItem(6, product)
-        self.setHorizontalHeaderItem(7, status)
-        self.setHorizontalHeaderItem(8, support)
-        self.setHorizontalHeaderItem(9, callDescription)
+        self.setHorizontalHeaderItem(5, callLocal)
+        self.setHorizontalHeaderItem(6, client)
+        self.setHorizontalHeaderItem(7, product)
+        self.setHorizontalHeaderItem(8, status)
+        self.setHorizontalHeaderItem(9, support)
+        self.setHorizontalHeaderItem(10, callDescription)
 
         self.horizontalHeader().resizeSection(0, 40)
         self.horizontalHeader().resizeSection(1, 100)
         self.horizontalHeader().resizeSection(2, 100)
         self.horizontalHeader().resizeSection(3, 120)
         self.horizontalHeader().resizeSection(4, 150)
-        self.horizontalHeader().resizeSection(5, 120)
+        self.horizontalHeader().resizeSection(5, 100)
         self.horizontalHeader().resizeSection(6, 120)
         self.horizontalHeader().resizeSection(7, 120)
-        self.horizontalHeader().resizeSection(8, 160)
-        self.horizontalHeader().resizeSection(9, 250)
+        self.horizontalHeader().resizeSection(8, 120)
+        self.horizontalHeader().resizeSection(9, 160)
+        self.horizontalHeader().resizeSection(10, 250)
         
         self.horizontalHeader().setStyleSheet(stylesheet)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
@@ -555,27 +558,32 @@ class ListCallsWindow(QMdiSubWindow):
             item = QTableWidgetItem(call.callType)
             self.openedCallsTable.setItem(row, 4, item)
 
+            # --> Local #
+            item = QTableWidgetItem(call.location)
+            self.openedCallsTable.setItem(row, 5, item)
+
             # --> Cliente #
             item = QTableWidgetItem(call.client)
-            self.openedCallsTable.setItem(row, 5, item)
+            self.openedCallsTable.setItem(row, 6, item)
+
 
             # --> Produto #
             item = QTableWidgetItem(call.product)
             item.setSizeHint(QSize(100, 0))
-            self.openedCallsTable.setItem(row, 6, item)
+            self.openedCallsTable.setItem(row, 7, item)
 
             # --> Status #
             item = QTableWidgetItem(call.status)
-            self.openedCallsTable.setItem(row, 7, item)
+            self.openedCallsTable.setItem(row, 8, item)
 
             # --> Suporte Responsável #
             item = QTableWidgetItem(call.support)
             item.setSizeHint(QSize(160, 0))
-            self.openedCallsTable.setItem(row, 8, item)
+            self.openedCallsTable.setItem(row, 9, item)
 
             # --> Descrição do Chamado #
             item = QTableWidgetItem(call.description)
-            self.openedCallsTable.setItem(row, 9, item)
+            self.openedCallsTable.setItem(row, 10, item)
 
             self.openedCallsTable.setRowHeight(row, 40)
 

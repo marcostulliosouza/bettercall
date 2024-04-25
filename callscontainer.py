@@ -18,7 +18,7 @@ class Call(object):
     """
     def __init__(self, callId=None, creator=None, totalDuration=None, answerDuration=None, typeId=None, callType=None, client=None,
                  product=None, device=None, statusId=None, status=None, supportId=None, support=None, description=None, inPlan=None,
-                 openingDate=None, answeringDate=None, endDate=None, detractor=None):
+                 openingDate=None, answeringDate=None, endDate=None, detractor=None, location=None):
         
         self.callId = int(callId)
         self.creator = creator
@@ -52,6 +52,7 @@ class Call(object):
         self.answeringDate = answeringDate
         self.endDate = endDate
         self.detractor = detractor
+        self.location = location
 
         dateFormat = "%Y-%m-%d %H:%M:%S"
         strippedOpeningDate = time.strptime(str(openingDate), dateFormat)
@@ -722,7 +723,8 @@ class CallContainer(object):
                 "cha_plano",
                 "cha_data_hora_abertura",
                 "cha_data_hora_atendimento",
-                "cha_data_hora_termino"
+                "cha_data_hora_termino",
+                "local_chamado.loc_nome AS cha_local"
                 ]
 
         tables = [
@@ -732,7 +734,8 @@ class CallContainer(object):
             ("produtos", "LEFT", "cha_produto = pro_id"),
             ("colaboradores", "LEFT", "col_id = atc_colaborador"),
             ("tipos_chamado", "LEFT", "cha_tipo = tch_id"),
-            ("status_chamado", "LEFT", "cha_status = stc_id")
+            ("status_chamado", "LEFT", "cha_status = stc_id"),
+            ("local_chamado", "LEFT", "cha_local = local_chamado.loc_id")
             ]
 
         where = [
@@ -778,11 +781,12 @@ class CallContainer(object):
             inPlan,
             openingDate,
             answeringDate,
-            endDate
+            endDate,
+            location
             ) in queryResult:
 
             call = Call(callId, creator, totalDuration, answerDuration, typeId,
-                        callType, client, product, device, statusId, status, supportId, support, description, inPlan, openingDate, answeringDate, endDate)
+                        callType, client, product, device, statusId, status, supportId, support, description, inPlan, openingDate, answeringDate, endDate, location)
             self.add(call)
 
 
@@ -817,6 +821,7 @@ class CallContainer(object):
                 "cha_data_hora_atendimento",
                 "cha_data_hora_termino",
                 "dtr_descricao",
+                "local_chamado.loc_nome AS cha_local"
                 ]
             
         tables = [
@@ -828,7 +833,8 @@ class CallContainer(object):
             ("tipos_chamado", "LEFT", "cha_tipo = tch_id"),
             ("status_chamado", "LEFT", "cha_status = stc_id"),
             ("acoes_chamados", "LEFT", "cha_acao = ach_id"),
-            ("detratores", "LEFT", "ach_detrator = dtr_id")
+            ("detratores", "LEFT", "ach_detrator = dtr_id"),
+            ("local_chamado", "LEFT", "cha_local = local_chamado.loc_id")
             ]
 
 
@@ -885,13 +891,13 @@ class CallContainer(object):
             openingDate,
             answeringDate,
             endDate,
-            detractor
+            detractor,
+            location
             ) in queryResult:
 
             call = Call(callId, creator, totalDuration, answerDuration, typeId,
-                        callType, client, product, device, statusId, status, supportId, support, description, inPlan, openingDate, answeringDate, endDate, detractor)
+                        callType, client, product, device, statusId, status, supportId, support, description, inPlan, openingDate, answeringDate, endDate, detractor, location)
             self.add(call)
-
 
 ###############################################################################################################################################################################
 
