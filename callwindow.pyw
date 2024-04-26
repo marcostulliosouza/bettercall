@@ -108,7 +108,7 @@ class CallWindow(QDialog):
         
         self.transferCallButton = MyQPushButton(" Transferir Chamado ")
         
-        self.giveupCallButton = MyQPushButton(" Desistir do Chamado ");
+        self.giveupCallButton = MyQPushButton(" Desistir do Chamado ")
         
         # --> Groupbox containing the call information #
         groupBoxTitleFont = QFont()
@@ -171,9 +171,14 @@ class CallWindow(QDialog):
         # --> DT #
         self.dtLabel = QLabel("Dispositivo de Teste:")
         self.dtData = MyQDataLabel("DT-" + self.call.device)
-       
+
+        # --> Local #
+        self.localLabel = QLabel("Local:")
+        self.localData = MyQDataLabel(self.call.location)
+
         # --> Call Description #
         callDescriptionLabel = QLabel("Descrição do Chamado:")
+
 
         self.callDescriptionData = QPlainTextEdit(self.call.description)
         self.callDescriptionData.setFont(callInfoFont)
@@ -196,11 +201,13 @@ class CallWindow(QDialog):
         if self.call.typeId > 1:
             callInfoFrameLayout.addWidget(self.dtLabel, 4, 0)
             callInfoFrameLayout.addWidget(self.dtData, 4, 1)
-            callInfoFrameLayout.addWidget(callDescriptionLabel, 5, 0, 1, 2)
-            callInfoFrameLayout.addWidget(self.callDescriptionData, 6, 0, 1, 2)
+            callInfoFrameLayout.addWidget(self.localLabel, 5, 0)
+            callInfoFrameLayout.addWidget(self.localData, 5, 1)
+            callInfoFrameLayout.addWidget(callDescriptionLabel, 6, 0, 1, 2)
+            callInfoFrameLayout.addWidget(self.callDescriptionData, 7, 0, 1, 2)
         else:
-            callInfoFrameLayout.addWidget(callDescriptionLabel, 4, 0, 1, 2)
-            callInfoFrameLayout.addWidget(self.callDescriptionData, 5, 0, 1, 2)
+            callInfoFrameLayout.addWidget(callDescriptionLabel, 6, 0, 1, 2)
+            callInfoFrameLayout.addWidget(self.callDescriptionData, 7, 0, 1, 2)
 
         callInfoGroupBox.setLayout(callInfoFrameLayout)
 
@@ -587,9 +594,7 @@ class CallWindow(QDialog):
                 self.close()
                 return
 
-
-###############################################################################################################################################################################
-
+    ###############################################################################################################################################################################
 
     def reject(self):
         """
@@ -598,9 +603,7 @@ class CallWindow(QDialog):
         """
         self.close()
 
-
-###############################################################################################################################################################################
-
+    ###############################################################################################################################################################################
 
     def closeEvent(self, event):
         """
@@ -609,17 +612,17 @@ class CallWindow(QDialog):
         """
         # --> if the detailed call window is not closed by an error #
         if self.exitStatus == 0:
-            
+
             # --> if the user that opened the detailed call is not the responsible for this call #
             if self.call.statusId == 1:
                 try:
                     self.call.lockCall(False)
-                    
+
                 except DatabaseConnectionError as error:
                     place, cause = error.args
 
-                    message = "Falha em: " + place + "\nErro: " +cause
-            
+                    message = "Falha em: " + place + "\nErro: " + cause
+
                     messageBox = QMessageBox()
                     messageBox.setText(message)
                     messageBox.setWindowTitle("Erro!")
@@ -627,7 +630,7 @@ class CallWindow(QDialog):
                     messageBox.setWindowIcon(QIcon(":/warning_icon.png"))
                     messageBox.exec_()
                     return
-                
+
             else:
                 if self.call.supportId == self.loggedUser['id']:
                     closeCallWindow = closecallwindow.CloseCallWindow(self.call, self)
@@ -639,4 +642,5 @@ class CallWindow(QDialog):
                         self.parent.userAnsweringCall = False
 
         self.parent.updateOpenedCallsTable()
+
                 

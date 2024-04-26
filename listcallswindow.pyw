@@ -106,7 +106,7 @@ class MyQTableWidget(QTableWidget):
         client = QTableWidgetItem("Cliente")
         product = QTableWidgetItem("Produto")
         status = QTableWidgetItem("Status")
-        support  = QTableWidgetItem("Suporte Responsável")
+        support = QTableWidgetItem("Suporte Responsável")
         callDescription = QTableWidgetItem("Descrição do Chamado")
 
         # --> Set the Header Items #
@@ -127,7 +127,7 @@ class MyQTableWidget(QTableWidget):
         self.horizontalHeader().resizeSection(2, 100)
         self.horizontalHeader().resizeSection(3, 120)
         self.horizontalHeader().resizeSection(4, 150)
-        self.horizontalHeader().resizeSection(5, 100)
+        self.horizontalHeader().resizeSection(5, 120)
         self.horizontalHeader().resizeSection(6, 120)
         self.horizontalHeader().resizeSection(7, 120)
         self.horizontalHeader().resizeSection(8, 120)
@@ -472,15 +472,15 @@ class ListCallsWindow(QMdiSubWindow):
         """
 
         # --> Try to load the calls. If any problem happen the program is terminated #
-        
+
         try:
             self.callsList.loadCalls()
-            
+
         except DatabaseConnectionError as error:
             place, cause = error.args
 
             message = "Falha em: " + place + "\nErro: " +cause
-        
+
             messageBox = QMessageBox()
             messageBox.setText(message)
             messageBox.setWindowTitle("Erro!")
@@ -489,7 +489,7 @@ class ListCallsWindow(QMdiSubWindow):
             messageBox.exec_()
             self.parent.close()
             return
-        
+
         self.openedCallsTable.clearContents()
         self.openedCallsTable.setRowCount(len(self.callsList))
         self.updateSubWindowTitle()
@@ -500,9 +500,8 @@ class ListCallsWindow(QMdiSubWindow):
 
         fontStyle = QFont()
         fontStyle.setBold(True)
-        
-        for row, call in enumerate(self.callsList):
 
+        for row, call in enumerate(self.callsList):
             # --> Icone #
             iconLabel = QLabel()
             
@@ -565,7 +564,6 @@ class ListCallsWindow(QMdiSubWindow):
             # --> Cliente #
             item = QTableWidgetItem(call.client)
             self.openedCallsTable.setItem(row, 6, item)
-
 
             # --> Produto #
             item = QTableWidgetItem(call.product)

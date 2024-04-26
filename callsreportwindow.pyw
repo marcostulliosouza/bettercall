@@ -251,7 +251,7 @@ class MyQTableWidget(QTableWidget):
         product = QTableWidgetItem("Produto")
         status = QTableWidgetItem("Status")
         detractor = QTableWidgetItem("Detrator")
-        support  = QTableWidgetItem("Suporte Responsável")
+        support = QTableWidgetItem("Suporte Responsável")
 
         # --> Set the Header Items #
         self.setHorizontalHeaderItem(0, openingDate)
@@ -271,7 +271,7 @@ class MyQTableWidget(QTableWidget):
         self.horizontalHeader().resizeSection(2, 100)
         self.horizontalHeader().resizeSection(3, 120)
         self.horizontalHeader().resizeSection(4, 130)
-        self.horizontalHeader().resizeSection(5, 100)
+        self.horizontalHeader().resizeSection(5, 150)
         self.horizontalHeader().resizeSection(6, 150)
         self.horizontalHeader().resizeSection(7, 150)
         self.horizontalHeader().resizeSection(8, 100)
