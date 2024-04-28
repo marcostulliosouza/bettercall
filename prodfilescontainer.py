@@ -5,7 +5,12 @@ from openpyxl import (Workbook, load_workbook)
 from myExceptions import *
 from magicDB import *
 
-__version__ = "1.5.3"
+__version__ = "1.5.4"
+"""
+1.5.3 - 2020
+1.5.4 - 2024
+"""
+
 
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
@@ -18,7 +23,7 @@ class ProdFileOp(object):
     orders that contain TEST when requested.
     """
 
-    def __init__(self, row, client, product, quantity, beginningHour, hoursProduction, raw_product):
+    def __init__(self, row, client, product, quantity, beginningHour, hoursProduction, raw_product, location):
         self.row = row
         self.client = client
         self.clientId = 1
@@ -28,16 +33,17 @@ class ProdFileOp(object):
         self.quantity = quantity
         self.beginningHour = beginningHour
         self.hoursProduction = hoursProduction
-        
+        self.location = location
+        self.locationExists = False
 
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def getClientId(self):
         """
         This method searches in the database for the id of the client, trying to match de exact name of the client
         """
         myDBConnection = DBConnection()
-        
+
         fields = ["cli_id"]
 
         tables = [("clientes", "", "")]
@@ -57,14 +63,38 @@ class ProdFileOp(object):
         else:
             self.clientId = queryResult[0][0]
 
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
+    ###############################################################################################################################################################################
+
+    def checkLocationExists(self):
+        """
+        This method checks if the location exists in the database
+        """
+        myDBConnection = DBConnection()
+
+        fields = ["COUNT(*)"]
+        tables = [("local_chamado", "", "")]
+        where = ["loc_nome LIKE '" + self.location + "'"]
+
+        querySuccess, queryResult = myDBConnection.selectQuery(fields, tables, where)
+
+        if not querySuccess:
+            raise DatabaseConnectionError(
+                "During the search for the name of the location when sending the production plan.",
+                "Failed to execute the query in the database.\nContact the system administrator.")
+            return False
+
+        # Se o número de linhas retornadas for maior que zero, o local existe no banco
+        return queryResult[0][0] > 0
+
+    ###############################################################################################################################################################################
 
     def getProductId(self):
         """
         This method searches in the database for the id of the op product, trying to match the exact name
         """
         myDBConnection = DBConnection()
-        
+
         fields = ["pro_id"]
 
         tables = [("produtos", "", "")]
@@ -75,7 +105,7 @@ class ProdFileOp(object):
             "pro_ativo = '1'"]
 
         orderBy = ["pro_nome DESC"]
-        
+
         querySuccess, queryResult = myDBConnection.selectQuery(fields, tables, where, orderby=orderBy)
 
         # --> If any error during database connection #
@@ -99,6 +129,7 @@ class ProdFileOpContainer(object):
     """
     This class holds the information about the production plan and all its programmed production
     """
+
     def __init__(self):
         self.__ops = []
         self.totalProductionHours = 0
@@ -106,41 +137,67 @@ class ProdFileOpContainer(object):
         self.productionDate = ""
         self.unformatedProductionDate = ""
 
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def setDate(self, date):
         self.unformatedProductionDate = date
         splitDate = date.split("/")
         self.productionDate = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
 
-
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def populateContainer(self, opList):
         """
-        This method is used to create and ProdFileOp object and add it to the prod file container
+        This method is used to create a ProdFileOp object for each operation in the production plan and add it to the prod file container.
         """
         self.totalProductionQuantity = sum(op[3] for op in opList)
         self.totalProductionHours = sum(op[5] for op in opList)
+
         for op in opList:
-            newProdFileOp = ProdFileOp(op[0], op[1], op[2], op[3], op[4], op[5], op[6])
+            # Extract operation information
+            row = op[0]
+            client = op[1]
+            product = op[2]
+            quantity = op[3]
+            beginningHour = op[4]
+            hoursProduction = op[5]
+            raw_product = op[6]
+            location = op[7]  # Adding operation location
+
+            # Check if the location exists in the database
+            newProdFileOp = ProdFileOp(row, client, product, quantity, beginningHour, hoursProduction, raw_product,
+                                       location)
+            location_exists = newProdFileOp.checkLocationExists()
+
+            # If the location is not registered, assign it as "location not registered"
+            if not location_exists:
+                location = None
+
+            # Create the ProdFileOp object
+            newProdFileOp = ProdFileOp(row, client, product, quantity, beginningHour, hoursProduction, raw_product,
+                                       location)
+
             try:
                 newProdFileOp.getClientId()
                 newProdFileOp.getProductId()
             except DatabaseConnectionError as error:
-                raise DatabaseConnectionError("Durante a busca do nomes do Cliente e Produto durante o envio do plano de produção.",
-                                              "Falha ao tentar executar a consulta no banco.\nContate o administrador do sistema.")
+                raise DatabaseConnectionError(
+                    "Durante a busca dos nomes do Cliente e Produto durante o envio do plano de produção.",
+                    "Falha ao tentar executar a consulta no banco.\nContate o administrador do sistema.")
                 return
+
+            # Add the ProdFileOp object to the container
             self.add(newProdFileOp)
-    
+
+    ###############################################################################################################################################################################
+
     def add(self, op):
         """
         This method inserts an OP to the ops list
         """
         self.__ops.append(op)
 
-
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def flushToDatabase(self):
         """
@@ -154,22 +211,22 @@ class ProdFileOpContainer(object):
             "pdp_data",
             "pdp_total_horas",
             "pdp_total_producao"
-            ]
+        ]
 
         values = [
             ("'" + self.productionDate + "'",
-             "'" + str(self.totalProductionHours)  + "'",
+             "'" + str(self.totalProductionHours) + "'",
              "'" + str(self.totalProductionQuantity) + "'")
-            ]
+        ]
 
         inserted, insertedId = myDBConnection.insertQuery(table, fields, values)
 
         if not inserted:
             raise DatabaseConnectionError("Durante a inserção dos dados do plano de produção no banco.",
-                                          "Falha ao tentar executar a inserção no banco.\nContate o administrador do sistema.")
+                                          "Falha ao tentar executar a inserção no banco.\nContate o administrador do "
+                                          "sistema.")
             return
-        
-        
+
         if inserted:
 
             table = "ordens_de_producao"
@@ -181,19 +238,18 @@ class ProdFileOpContainer(object):
                 "odp_quantidade",
                 "odp_hora_inicio",
                 "odp_horas_producao"
-                ]
+            ]
 
             values = []
-            
+
             for op in self.__ops:
-                
                 values.append(("'" + str(insertedId) + "'",
-                     "'" + str(op.clientId)  + "'",
-                     "'" + str(op.productId)+ "'",
-                     "'" + str(op.quantity) + "'",
-                     "'" + op.beginningHour + "'",
-                     "'" + str(op.hoursProduction) + "'"))
-                
+                               "'" + str(op.clientId) + "'",
+                               "'" + str(op.productId) + "'",
+                               "'" + str(op.quantity) + "'",
+                               "'" + op.beginningHour + "'",
+                               "'" + str(op.hoursProduction) + "'"))
+
             inserted, insertedId = myDBConnection.insertQuery(table, fields, values)
 
             if not inserted:
@@ -201,12 +257,11 @@ class ProdFileOpContainer(object):
                                               "Falha ao tentar executar a inserção no banco.\nContate o administrador do sistema.")
                 return
 
+    ###############################################################################################################################################################################
 
-###############################################################################################################################################################################
-        
     def createCalls(self):
         """
-        This method is called to insert into the calls table all the instalation needed for the next production plan
+        This method is called to insert into the calls table all the installation needed for the next production plan
         """
         myDBConnection = DBConnection()
 
@@ -215,58 +270,61 @@ class ProdFileOpContainer(object):
         fields = [
             "cha_tipo",
             "cha_cliente",
-	    "cha_produto",
-	    "cha_DT",
-	    "cha_descricao",
-	    "cha_status",
-	    "cha_data_hora_abertura",
-	    "cha_operador",
-            "cha_plano"
-            ]
+            "cha_produto",
+            "cha_DT",
+            "cha_descricao",
+            "cha_status",
+            "cha_data_hora_abertura",
+            "cha_operador",
+            "cha_plano",
+            "cha_local"
+        ]
 
         values = []
-            
+
         for op in self.__ops:
             callDescription = "CHAMADO AUTOMÁTICO - INSTALAÇÃO\nDATA: " + self.unformatedProductionDate + " \nHORA: " + op.beginningHour
-            callDescription += " \nCLIENTE: "+str(op.client)
-            callDescription += " \nPRODUTO: "+str(op.raw_product)
+            callDescription += " \nCLIENTE: " + str(op.client)
+            callDescription += " \nPRODUTO: " + str(op.raw_product)
 
             values.append((
                 "'1'",
                 "'" + str(op.clientId) + "'",
                 "'" + str(op.productId) + "'",
-                "'0000_0'",
-                "'" +callDescription+ "'",
+                "'000000'",
+                "'" + callDescription + "'",
                 "'1'",
                 "'" + self.productionDate + " " + op.beginningHour + "'",
                 "'plano.de.producao'",
-                "'1'"))
+                "'1'",
+                "'" + op.location + "'",
+            ))
 
-                       
+        # Debugging: Print SQL query before execution
+        query = myDBConnection.insertQuery(table, fields, values, queryBuild=True)
+        print("SQL Query:", query)
+
         inserted, insertedId = myDBConnection.insertQuery(table, fields, values)
         if not inserted:
             raise DatabaseConnectionError("Durante a inserção dos dados das ordens de produção no banco.",
                                           "Falha ao tentar executar a inserção no banco.\nContate o administrador do sistema.")
             return
-  
-        
-###############################################################################################################################################################################
+
+    ###############################################################################################################################################################################
 
     def __iter__(self):
         for op in iter(self.__ops):
             yield op
 
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def __len__(self):
         return len(self.__ops)
 
-            
-        
+
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
-    
 
 
 class ProdFileTranslator(object):
@@ -279,7 +337,7 @@ class ProdFileTranslator(object):
         self.filePath = filePath
         self.workSheet = None
         self.parseList = []
-        
+
         self.hourList = {}
         self.populateHourList()
 
@@ -287,6 +345,7 @@ class ProdFileTranslator(object):
         self.CLIENTCOLUMN = 0
         self.PRODUCTCOLUMN = 1
         self.QUANTITYCOLUMN = 42
+        self.LOCALCOLUMN = 8
         self.HASTESTCOLUNN = 10
         self.T3BEFORELUNCH = list(range(13, 15))
         self.T3AFTERLUNCH = list(range(16, 19))
@@ -297,9 +356,8 @@ class ProdFileTranslator(object):
 
         self.productionHoursList = self.T3BEFORELUNCH + self.T3AFTERLUNCH + self.T1BEFORELUNCH + self.T1AFTERLUNCH + self.T2BEFORELUNCH + self.T2AFTERLUNCH
 
+    ###############################################################################################################################################################################
 
-###############################################################################################################################################################################
-        
     def populateHourList(self):
         # --> T3 #
         self.hourList[13] = "00:38:00"
@@ -333,9 +391,8 @@ class ProdFileTranslator(object):
         self.hourList[39] = "23:00:00"
         self.hourList[40] = "23:59:59"
 
-    
-###############################################################################################################################################################################
-    
+    ###############################################################################################################################################################################
+
     def parseData(self):
         """
         This method parses the data inside the worksheet loaded
@@ -346,21 +403,20 @@ class ProdFileTranslator(object):
             if i < 33:
                 i += 1
                 continue
-            
+
             client = str(row[self.CLIENTCOLUMN].value).rstrip()
             aux_product = str(row[self.PRODUCTCOLUMN].value).split("RET-")[-1]
             product = aux_product.split(" - ")[0]
             raw_product = str(row[self.PRODUCTCOLUMN].value)
+            location = str(row[self.LOCALCOLUMN].value.rstrip())
             quantity = row[self.QUANTITYCOLUMN].value
             hasTest = row[self.HASTESTCOLUNN].value
 
             beginningHour = 0
-   
-            if client is None and i > 33:
-                break            
 
-           
-            
+            if client is None and i > 33:
+                break
+
             if self.isInt(quantity) and bool("COM TESTE" in str(hasTest).upper()):
                 if int(quantity) > 0:
                     counter = 0
@@ -371,21 +427,22 @@ class ProdFileTranslator(object):
                         if self.isInt(row[index].value):
                             if int(row[index].value) > 0:
                                 if counter == 0:
-                                    begginingHour = index
+                                    beginningHour = index
                                 counter += 1
                         else:
                             if bool("SETUP" in str(row[index].value).upper()):
                                 if counter == 0:
-                                    begginingHour = index
-                                counter += 1 
-                   
-                    self.parseList.append([i, client, product, quantity, self.hourList[begginingHour], counter, raw_product])                       
-                    
+                                    beginningHour = index
+                                counter += 1
+
+                    self.parseList.append(
+                        [i, client, product, quantity, self.hourList[beginningHour], counter, raw_product, location])
+
             i += 1
 
         return self.parseList
 
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def isInt(self, message):
         """
@@ -399,7 +456,7 @@ class ProdFileTranslator(object):
         except ValueError:
             return False
 
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def loadWorksheet(self):
         """
@@ -409,59 +466,56 @@ class ProdFileTranslator(object):
         try:
             workbook = load_workbook(self.filePath, read_only=True, data_only=True)
             self.workSheet = workbook.worksheets[0]
-          
+
         except:
             print("Erro durante a abertura da planilha de produção.\n{0} ".format(sys.exc_info()[0]))
-            return False 
- 
+            return False
+
         return True
 
+
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
 
-    
+
 class ProdFileOpChecker(object):
     """
     This class is used by mainwindow to check if any production plan was uploaded
     """
+
     def __init__(self):
         self.lastUpload = ""
         self.uploaded = False
 
+    ###############################################################################################################################################################################
 
-###############################################################################################################################################################################
-        
     def checkProductionUpload(self, date=""):
         """
         This method checks if there was uploaded the production plan for the "next day".
         """
-        myDBConnection = DBConnection()        
-        
+        myDBConnection = DBConnection()
+
         fields = [
             "pdp_id"]
 
         tables = [
             ("planos_de_producao", "", "")
-            ]
-       
-        where = [
-             "pdp_data >= DATE('" + date + "')"
-            ] 
+        ]
 
-        
+        where = [
+            "pdp_data >= DATE('" + date + "')"
+        ]
+
         querySuccess, queryResult = myDBConnection.selectQuery(fields, tables, where)
 
         if not querySuccess:
             raise DatabaseConnectionError("Verificação de Envio do Plano de Produção",
                                           "Falha ao tentar executar a consulta no banco.\nContate o administrador do sistema.")
             return
-            
-        if querySuccess and len(queryResult) > 0:    
+
+        if querySuccess and len(queryResult) > 0:
             return True
-        
+
         else:
             return False
-            
-        
-        
