@@ -58,7 +58,6 @@ class Call(object):
         if location is not None:
             self.location = location
         else:
-
             self.location = "NÃO INFORMADO"
 
         dateFormat = "%Y-%m-%d %H:%M:%S"
@@ -717,7 +716,7 @@ class CallContainer(object):
             "cha_data_hora_abertura",
             "cha_data_hora_atendimento",
             "cha_data_hora_termino",
-            "local_chamado.loc_nome AS cha_local"
+            "cha_local"
         ]
 
         tables = [
@@ -728,7 +727,7 @@ class CallContainer(object):
             ("colaboradores", "LEFT", "col_id = atc_colaborador"),
             ("tipos_chamado", "LEFT", "cha_tipo = tch_id"),
             ("status_chamado", "LEFT", "cha_status = stc_id"),
-            ("local_chamado", "LEFT", "cha_local = local_chamado.loc_id")
+            ("local_chamado", "LEFT", "cha_local = loc_nome")
         ]
 
         where = [
