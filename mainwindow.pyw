@@ -1,8 +1,10 @@
 """
     SISTEMA BETTER CALL TEST
-    v2.0.0 - Desenvolvimento do módulo de controle de dispositivos, entrada e saida de dispositivos,
+    v2.0.1 - Desenvolvimento do módulo de controle de dispositivos, entrada e saida de dispositivos,
              cadastro de notas fiscais e controle das manutenções preventivas. Também foi reescrito todo
              o código para padronização e utilização melhor do conceito de OO.
+
+    V2.0.0 - Desenvolvido afim de implementar e visualizar local de instalação e atendimento de chamados.
     
     v1.6.1 - Correção de um problema na transferência de chamados. Adicionado a função de atualizar os
              parâmetros do objeto Call após transferir o chamado.
@@ -78,6 +80,8 @@ import listmaintenanceswindow
 import listmaintenanceformswindow
 import createengcallwindow
 
+#2024
+import maintenancesreportwindow
 
 from myExceptions import *
 
@@ -230,18 +234,18 @@ class MainWindow(QMainWindow):
         # --> Relatorio->Relatório de Chamados #
         self.reports_callsReportAction = QAction("Relatório de Chamados", self)
         self.reports_callsReportAction.setIcon(QIcon(":/calls_report_2.png"))
-        self.reports_callsReportAction.setShortcut("Ctrl+R")
+        # self.reports_callsReportAction.setShortcut("Ctrl+R")
         self.reports_callsReportAction.setToolTip("Relatório de Chamados")
         self.reports_callsReportAction.setStatusTip("Relatório de Chamados")
         self.reports_callsReportAction.triggered.connect(self.showCallsReportSubWindow)
 
-        # # --> Relatorios->Relatório de Manutenção Preventiva #
-        # self.reports_indicatorSearchAction = QAction("Relatório de Manutenção Preventiva", self)
-        # self.reports_indicatorSearchAction.setIcon(QIcon(":images/detailed_call_report.png"))
-        # self.reports_indicatorSearchAction.setShortcut("Ctrl+I")
-        # self.reports_indicatorSearchAction.setToolTip("Pesquisa de Indicador")
-        # self.reports_indicatorSearchAction.setStatusTip("Pesquisa de Indicador")
-        # self.reports_indicatorSearchAction.triggered.connect(self.showIndicatorSearchSubWindow)
+        # --> Relatorios->Relatório de Manutenção Preventiva #
+        self.reports_maintenanceReportAction = QAction("Relatório de Manutenção Preventiva", self)
+        self.reports_maintenanceReportAction.setIcon(QIcon(":images/file.png"))
+        self.reports_maintenanceReportAction.setShortcut("Ctrl+M")
+        self.reports_maintenanceReportAction.setToolTip("Relatório de Manutenção Preventiva")
+        self.reports_maintenanceReportAction.setStatusTip("Relatório de Manutenção Preventiva")
+        self.reports_maintenanceReportAction.triggered.connect(self.showMaintenancesReportSubWindow)
 
         # --> Relatorios->Pesquisa de Indicador #
         self.reports_indicatorSearchAction = QAction("Pesquisa de Indicador", self)
@@ -271,7 +275,7 @@ class MainWindow(QMainWindow):
         # --> Equipamentos->Vincular Equipamentos a Produtos #
         self.equipments_vinculateEquipmentsAction = QAction("Vincular Equipamentos e Produtos", self)
         self.equipments_vinculateEquipmentsAction.setIcon(QIcon(":/chain.png"))
-        #self.equipments_vinculateEquipmentsAction.setShortcut("Ctrl+D")
+        self.equipments_vinculateEquipmentsAction.setShortcut("Ctrl+V")
         self.equipments_vinculateEquipmentsAction.setToolTip("Vincular Equipamentos a Produtos.")
         self.equipments_vinculateEquipmentsAction.setStatusTip("Vincular Equipamentos a Produtos.")
         self.equipments_vinculateEquipmentsAction.triggered.connect(self.showEquipmentsVinculationSubWindow)
@@ -337,10 +341,11 @@ class MainWindow(QMainWindow):
         #self.inputsMenu.addAction(self.input_editCategoriesAction)
 
         # Relatorios
-        self.reportsMenu = self.menuBar().addMenu("Relatórios")
+        self.reportsMenu = self.menuBar().addMenu("&Relatórios")
         self.reportsMenu.addAction(self.reports_callsReportAction)
         if self.loggedUser["category"] <= 40:
             self.reportsMenu.addAction(self.reports_indicatorSearchAction)
+            # self.reportsMenu.addAction(self.reports_maintenanceReportAction)
             
 
         # Arquivos
@@ -668,6 +673,32 @@ class MainWindow(QMainWindow):
         yPos = ((self.screenResolution['h'] - 140) - callsReportSubWindow.height()) / 2
 
         callsReportSubWindow.move(xPos, yPos)
+
+###############################################################################################################################################################################
+###############################################################################################################################################################################
+
+    def showMaintenancesReportSubWindow(self):
+        """
+        This method is used to show de MDI subwindow responsible for showing the maintenances report
+        """
+        if not self.logged:
+            return
+
+        # if the window is already opened it will be activated
+        if "maintenancesreportwindow" in self.openedSubWindows.keys():
+            self.MDI.setActiveSubWindow(self.openedSubWindows["maintenancesreportwindow"])
+            return
+
+        # else it will be created, added to the opened window list
+        maintenancesReportSubWindow = maintenancesreportwindow.MaintenancesReportWindow(self)
+        self.openedSubWindows["maintenancesreportwindow"] = maintenancesReportSubWindow
+        self.MDI.addSubWindow(maintenancesReportSubWindow)
+        maintenancesReportSubWindow.show()
+
+        xPos = (self.screenResolution['w'] - maintenancesReportSubWindow.width()) / 2
+        yPos = ((self.screenResolution['h'] - 140) - maintenancesReportSubWindow.height()) / 2
+
+        maintenancesReportSubWindow.move(xPos, yPos)
 
 ###############################################################################################################################################################################
 
