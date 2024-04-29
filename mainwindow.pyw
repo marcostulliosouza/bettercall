@@ -184,7 +184,7 @@ class MainWindow(QMainWindow):
         # --> Iniciar->Definir Analista Responsável #
         self.start_clientsAndResponsiblesAction = QAction("&Analistas e Clientes", self)
         self.start_clientsAndResponsiblesAction.setShortcut("Ctrl+A")
-        self.start_clientsAndResponsiblesAction.setIcon(QIcon("images/client.png"))
+        self.start_clientsAndResponsiblesAction.setIcon(QIcon(":/client.png"))
         self.start_clientsAndResponsiblesAction.setToolTip("Vincular Clientes aos Analistas")
         self.start_clientsAndResponsiblesAction.setStatusTip("Vincular Clientes aos Analistas")
         self.start_clientsAndResponsiblesAction.triggered.connect(self.showClientResponsibleSubWindow)
@@ -208,7 +208,7 @@ class MainWindow(QMainWindow):
 
         # --> Chamados->Chamados de Engenharia #
         self.calls_engineeringCallsAction = QAction("Chamado de Engenharia", self)
-        self.calls_engineeringCallsAction.setIcon(QIcon("images/engineer_call.png"))
+        self.calls_engineeringCallsAction.setIcon(QIcon(":/engineer_call.png"))
         self.calls_engineeringCallsAction.setToolTip("Abrir Chamado de Engenharia")
         self.calls_engineeringCallsAction.setStatusTip("Abrir Chamado de Engenharia")
         self.calls_engineeringCallsAction.triggered.connect(self.showCreateEngCallWindow)
@@ -222,14 +222,14 @@ class MainWindow(QMainWindow):
 
         # --> Insumos->Editar Categorias #
         self.input_editCategoriesAction = QAction("Editar Categorias", self)
-        self.input_editCategoriesAction.setIcon(QIcon("images/input_categories.png"))
+        self.input_editCategoriesAction.setIcon(QIcon(":/input_categories.png"))
         self.input_editCategoriesAction.setToolTip("Editar Categorias dos Insumos")
         self.input_editCategoriesAction.setStatusTip("Editar Categorias dos Insumos")
         self.input_editCategoriesAction.triggered.connect(self.showEditCategoriesInputWindow)
 
         # --> Relatorio->Relatório de Chamados #
         self.reports_callsReportAction = QAction("Relatório de Chamados", self)
-        self.reports_callsReportAction.setIcon(QIcon("images/calls_report_2.png"))
+        self.reports_callsReportAction.setIcon(QIcon(":/calls_report_2.png"))
         self.reports_callsReportAction.setShortcut("Ctrl+R")
         self.reports_callsReportAction.setToolTip("Relatório de Chamados")
         self.reports_callsReportAction.setStatusTip("Relatório de Chamados")
@@ -254,7 +254,7 @@ class MainWindow(QMainWindow):
 
         # --> Arquivos->Enviar Plano de Produção #
         self.files_sendProdPlanAction = QAction("&Enviar Plano de Produção", self)
-        self.files_sendProdPlanAction.setIcon(QIcon("images/prod_plan_2.png"))
+        self.files_sendProdPlanAction.setIcon(QIcon(":/prod_plan_2.png"))
         self.files_sendProdPlanAction.setShortcut("Ctrl+E")
         self.files_sendProdPlanAction.setToolTip("Enviar Plano de Produção")
         self.files_sendProdPlanAction.setStatusTip("Enviar Plano de Produção")
@@ -262,7 +262,7 @@ class MainWindow(QMainWindow):
 
         # --> Arquivos->Listar Notas Fiscais #
         self.files_listInvoicesAction = QAction("Listar &Notas Fiscais", self)
-        self.files_listInvoicesAction.setIcon(QIcon("images/invoices2.png"))
+        self.files_listInvoicesAction.setIcon(QIcon(":/invoices2.png"))
         self.files_listInvoicesAction.setShortcut("Ctrl+N")
         self.files_listInvoicesAction.setToolTip("Listar Notas Fiscais")
         self.files_listInvoicesAction.setStatusTip("Listar Notas Fiscais")
@@ -270,7 +270,7 @@ class MainWindow(QMainWindow):
 
         # --> Equipamentos->Vincular Equipamentos a Produtos #
         self.equipments_vinculateEquipmentsAction = QAction("Vincular Equipamentos e Produtos", self)
-        self.equipments_vinculateEquipmentsAction.setIcon(QIcon("images/chain.png"))
+        self.equipments_vinculateEquipmentsAction.setIcon(QIcon(":/chain.png"))
         #self.equipments_vinculateEquipmentsAction.setShortcut("Ctrl+D")
         self.equipments_vinculateEquipmentsAction.setToolTip("Vincular Equipamentos a Produtos.")
         self.equipments_vinculateEquipmentsAction.setStatusTip("Vincular Equipamentos a Produtos.")
@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
         
         # --> Equipamentos->Listar Dispositivos #
         self.equipments_listDevicesAction = QAction("Listar &Dispositivos", self)
-        self.equipments_listDevicesAction.setIcon(QIcon("images/scanner.png"))
+        self.equipments_listDevicesAction.setIcon(QIcon(":/scanner.png"))
         self.equipments_listDevicesAction.setShortcut("Ctrl+D")
         self.equipments_listDevicesAction.setToolTip("Listar Dispositivos de Teste e Gravação")
         self.equipments_listDevicesAction.setStatusTip("Listar Dispositivos de Teste e Gravação")
@@ -286,28 +286,28 @@ class MainWindow(QMainWindow):
 
         # --> Equipamentos->Devolver Equipamentos #
         self.equipments_returnEquipmentsAction = QAction("Devolver Equipamentos", self)
-        self.equipments_returnEquipmentsAction.setIcon(QIcon("images/send_equipment.png"))
+        self.equipments_returnEquipmentsAction.setIcon(QIcon(":/send_equipment.png"))
         self.equipments_returnEquipmentsAction.setToolTip("Devolver Equipamentos")
         self.equipments_returnEquipmentsAction.setStatusTip("Devolver Equipamentos")
         self.equipments_returnEquipmentsAction.triggered.connect(self.showReturnEquipmentsSubWindow)
 
         # --> Equipamentos->Receber Equipamentos #
         self.equipments_receiveEquipmentsAction = QAction("Receber Equipamentos", self)
-        self.equipments_receiveEquipmentsAction.setIcon(QIcon("images/receive_equipment.png"))
+        self.equipments_receiveEquipmentsAction.setIcon(QIcon(":/receive_equipment.png"))
         self.equipments_receiveEquipmentsAction.setToolTip("Receber Equipamentos")
         self.equipments_receiveEquipmentsAction.setStatusTip("Receber Equipamentos")
         self.equipments_receiveEquipmentsAction.triggered.connect(self.showReceiveEquipmentsSubWindow)
 
         # --> Equipamentos->Manutenção Preventiva #
         self.equipments_listMaintenancesAction = QAction("Manutenção Preventiva", self)
-        self.equipments_listMaintenancesAction.setIcon(QIcon("images/maintenance.png"))
+        self.equipments_listMaintenancesAction.setIcon(QIcon(":/maintenance.png"))
         self.equipments_listMaintenancesAction.setToolTip("Manutenção Preventiva")
         self.equipments_listMaintenancesAction.setStatusTip("Manutenção Preventiva")
         self.equipments_listMaintenancesAction.triggered.connect(self.showListMaintenancesSubWindow)
 
         # --> Equipamentos->Formulários de Manutenção #
         self.equipments_listMaintenanceFormsAction = QAction("Formulários de Manutenção", self)
-        self.equipments_listMaintenanceFormsAction.setIcon(QIcon("images/formulario.png"))
+        self.equipments_listMaintenanceFormsAction.setIcon(QIcon(":/formulario.png"))
         self.equipments_listMaintenanceFormsAction.setToolTip("Formulários de Manutenção")
         self.equipments_listMaintenanceFormsAction.setStatusTip("Formulários de Manutenção")
         self.equipments_listMaintenanceFormsAction.triggered.connect(self.showListMaintenanceFormsSubWindow)

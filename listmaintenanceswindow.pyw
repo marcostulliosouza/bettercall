@@ -118,7 +118,7 @@ class MyQDeviceImageButton(QPushButton):
         self.deviceImageExtension = deviceImageExtension
         
         self.setCursor(Qt.PointingHandCursor)
-        self.setIcon(QIcon("images/cam.png"))
+        self.setIcon(QIcon(":/cam.png"))
         self.setIconSize(QSize(25, 25))
 
         self.clicked.connect(self.displayDeviceImage)
@@ -789,7 +789,7 @@ class ListMaintenancesWindow(QMdiSubWindow):
                 messageBox.setText(message)
                 messageBox.setWindowTitle("Erro!")
                 messageBox.setIcon(QMessageBox.Critical)
-                messageBox.setWindowIcon(QIcon("images/warning_icon.png"))
+                messageBox.setWindowIcon(QIcon(":/warning_icon.png"))
                 messageBox.exec_()
                 return
 
