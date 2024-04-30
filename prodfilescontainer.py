@@ -283,7 +283,7 @@ class ProdFileOpContainer(object):
         values = []
 
         for op in self.__ops:
-            callDescription = "CHAMADO AUTOMÁTICO - INSTALAÇÃO\nDATA: " + self.unformatedProductionDate + " \nHORA: " + op.beginningHour
+            callDescription = "CHAMADO AUTOMÁTICO - INSTALAÇÃO\nDATA: " + self.unformatedProductionDate + " - HORA: " + op.beginningHour
             callDescription += " \nCLIENTE: " + str(op.client)
             callDescription += " \nPRODUTO: " + str(op.raw_product)
 
