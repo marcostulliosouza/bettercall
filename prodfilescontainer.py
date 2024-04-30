@@ -171,7 +171,7 @@ class ProdFileOpContainer(object):
 
             # If the location is not registered, assign it as "location not registered"
             if not location_exists:
-                location = None
+                location = "NÃO CADASTRADO"
 
             # Create the ProdFileOp object
             newProdFileOp = ProdFileOp(row, client, product, quantity, beginningHour, hoursProduction, raw_product,
