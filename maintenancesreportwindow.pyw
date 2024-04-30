@@ -381,7 +381,7 @@ class MaintenancesReportWindow(QMdiSubWindow):
         self.updateTimer.timeout.connect(self.updateMaintenancesTable)
         self.updateTimer.start(60000)
         
-        self.setWindowIcon(QIcon(":/file.png"))
+        self.setWindowIcon(QIcon(":/prod_plan_2.png"))
         self.updateSubWindowTitle()
 
         # --> Line responsible for preventing window resize

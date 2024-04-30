@@ -241,7 +241,7 @@ class MainWindow(QMainWindow):
 
         # --> Relatorios->Relatório de Manutenção Preventiva #
         self.reports_maintenanceReportAction = QAction("Relatório de Manutenção Preventiva", self)
-        self.reports_maintenanceReportAction.setIcon(QIcon(":images/file.png"))
+        self.reports_maintenanceReportAction.setIcon(QIcon(":/prod_plan_2.png"))
         self.reports_maintenanceReportAction.setShortcut("Ctrl+M")
         self.reports_maintenanceReportAction.setToolTip("Relatório de Manutenção Preventiva")
         self.reports_maintenanceReportAction.setStatusTip("Relatório de Manutenção Preventiva")
@@ -345,7 +345,7 @@ class MainWindow(QMainWindow):
         self.reportsMenu.addAction(self.reports_callsReportAction)
         if self.loggedUser["category"] <= 40:
             self.reportsMenu.addAction(self.reports_indicatorSearchAction)
-            # self.reportsMenu.addAction(self.reports_maintenanceReportAction)
+            self.reportsMenu.addAction(self.reports_maintenanceReportAction)
             
 
         # Arquivos
