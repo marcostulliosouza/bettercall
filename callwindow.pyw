@@ -206,6 +206,8 @@ class CallWindow(QDialog):
             callInfoFrameLayout.addWidget(callDescriptionLabel, 6, 0, 1, 2)
             callInfoFrameLayout.addWidget(self.callDescriptionData, 7, 0, 1, 2)
         else:
+            callInfoFrameLayout.addWidget(self.localLabel, 5, 0)
+            callInfoFrameLayout.addWidget(self.localData, 5, 1)
             callInfoFrameLayout.addWidget(callDescriptionLabel, 6, 0, 1, 2)
             callInfoFrameLayout.addWidget(self.callDescriptionData, 7, 0, 1, 2)
 
