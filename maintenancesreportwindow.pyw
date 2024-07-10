@@ -1,44 +1,48 @@
 from PyQt5.QtCore import (
-        Qt,
-        QTimer,
-        QDate,
-        QSize
-    )
+    Qt,
+    QTimer,
+    QDate,
+    QSize
+)
 
 from PyQt5.QtGui import (
-        QFont,
-        QIcon,
-        QPalette,
-        QCursor
-    )
+    QFont,
+    QIcon,
+    QPalette,
+    QCursor
+)
 
 from PyQt5.QtWidgets import (
-        QMdiSubWindow,
-        QGroupBox,
-        QLabel,
-        QDateEdit,
-        QCalendarWidget,
-        QLineEdit,
-        QComboBox,
-        QSpacerItem,
-        QCheckBox,
-        QPushButton,
-        QLayout,
-        QHBoxLayout,
-        QVBoxLayout,
-        QTableWidget,
-        QAbstractScrollArea,
-        QTableWidgetItem,
-        QHeaderView,
-        QWidget,
-        QFileDialog,
-        QMessageBox
-    )
+    QMdiSubWindow,
+    QGroupBox,
+    QLabel,
+    QDateEdit,
+    QCalendarWidget,
+    QLineEdit,
+    QComboBox,
+    QSpacerItem,
+    QCheckBox,
+    QPushButton,
+    QLayout,
+    QHBoxLayout,
+    QVBoxLayout,
+    QTableWidget,
+    QAbstractScrollArea,
+    QTableWidgetItem,
+    QHeaderView,
+    QWidget,
+    QFileDialog,
+    QMessageBox,
+    QPlainTextEdit
+)
 
 from myExceptions import *
 import maintenancesreportcontainer
+from detailedmaintenancereportwindow import DetailedMaintenanceReportWindow
+from datetime import datetime
 
 __version__ = "1.0.0"
+
 
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
@@ -46,8 +50,9 @@ __version__ = "1.0.0"
 
 class MyQLabel(QLabel):
     """
-    This class reimplements the qlabel class
+    This class reimplements the QLabel class
     """
+
     def __init__(self, text="", parent=None):
         super(MyQLabel, self).__init__(text, parent)
         boldFont = QFont()
@@ -63,49 +68,50 @@ class MyQLabel(QLabel):
 ###############################################################################################################################################################################
 class MyQDateEdit(QDateEdit):
     """
-    This class reimplements the qdateedit class
+    This class reimplements the QDateEdit class
     """
+
     def __init__(self, date=None, parent=None):
         super(MyQDateEdit, self).__init__(parent)
 
-        calendarStylesheet = "QCalendarWidget QWidget#qt_calendar_navigationbar :hover{"\
-                     "          font-weight: bold;" \
-                     "          color: white;}" \
-                     "QCalendarWidget QWidget#qt_calendar_navigationbar{"\
-                     "          font-weight: bold;" \
-                     "          color: white;" \
-                     "          background-color: qlineargradient( " \
-                     "                      x1:0, " \
-                     "                      y1:0, " \
-                     "                      x2:0, " \
-                     "                      y2:1, " \
-                     "                      stop:0 #4C4C4C, " \
-                     "                      stop: 0.12 #595959, " \
-                     "                      stop: 0.25 #666666, " \
-                     "                      stop: 0.39 #474747, " \
-                     "                      stop: 0.5 #2C2C2C, " \
-                     "                      stop: 0.51 #000000, " \
-                     "                      stop: 0.60 #111111, " \
-                     "                      stop: 0.76 #2B2B2B, " \
-                     "                      stop: 0.91 #1C1C1C, " \
-                     "                      stop: 1 #131313);}" \
-                     "QCalendarWidget QWidget{"\
-                     "          font-weight: bold;" \
-                     "          selection-background-color: qlineargradient( " \
-                     "                      x1:0, " \
-                     "                      y1:0, " \
-                     "                      x2:0, " \
-                     "                      y2:1, " \
-                     "                      stop:0 #7C7C7C, " \
-                     "                      stop: 0.12 #898989, " \
-                     "                      stop: 0.25 #999999, " \
-                     "                      stop: 0.39 #777777, " \
-                     "                      stop: 0.5 #5C5C5C, " \
-                     "                      stop: 0.51 #333333, " \
-                     "                      stop: 0.60 #444444, " \
-                     "                      stop: 0.76 #5B5B5B, " \
-                     "                      stop: 0.91 #4C4C4C, " \
-                     "                      stop: 1 #434343);}"
+        calendarStylesheet = "QCalendarWidget QWidget#qt_calendar_navigationbar :hover{" \
+                             "          font-weight: bold;" \
+                             "          color: white;}" \
+                             "QCalendarWidget QWidget#qt_calendar_navigationbar{" \
+                             "          font-weight: bold;" \
+                             "          color: white;" \
+                             "          background-color: qlineargradient( " \
+                             "                      x1:0, " \
+                             "                      y1:0, " \
+                             "                      x2:0, " \
+                             "                      y2:1, " \
+                             "                      stop:0 #4C4C4C, " \
+                             "                      stop: 0.12 #595959, " \
+                             "                      stop: 0.25 #666666, " \
+                             "                      stop: 0.39 #474747, " \
+                             "                      stop: 0.5 #2C2C2C, " \
+                             "                      stop: 0.51 #000000, " \
+                             "                      stop: 0.60 #111111, " \
+                             "                      stop: 0.76 #2B2B2B, " \
+                             "                      stop: 0.91 #1C1C1C, " \
+                             "                      stop: 1 #131313);}" \
+                             "QCalendarWidget QWidget{" \
+                             "          font-weight: bold;" \
+                             "          selection-background-color: qlineargradient( " \
+                             "                      x1:0, " \
+                             "                      y1:0, " \
+                             "                      x2:0, " \
+                             "                      y2:1, " \
+                             "                      stop:0 #7C7C7C, " \
+                             "                      stop: 0.12 #898989, " \
+                             "                      stop: 0.25 #999999, " \
+                             "                      stop: 0.39 #777777, " \
+                             "                      stop: 0.5 #5C5C5C, " \
+                             "                      stop: 0.51 #333333, " \
+                             "                      stop: 0.60 #444444, " \
+                             "                      stop: 0.76 #5B5B5B, " \
+                             "                      stop: 0.91 #4C4C4C, " \
+                             "                      stop: 1 #434343);}"
 
         self.setCalendarPopup(True)
         self.setDisplayFormat("dd/MM/yyyy")
@@ -124,8 +130,9 @@ class MyQDateEdit(QDateEdit):
 
 class MyQPushButton(QPushButton):
     """
-    This class reimplements the qpushbutton class
+    This class reimplements the QPushButton class
     """
+
     def __init__(self, text="", parent=None):
         super(MyQPushButton, self).__init__(text, parent)
 
@@ -143,26 +150,28 @@ class MyQPushButton(QPushButton):
 
 class MyQLineEdit(QLineEdit):
     """
-    This class reimplements the qlineedit class
+    This class reimplements the QLineEdit class
     """
+
     def __init__(self, parent=None):
         super(MyQLineEdit, self).__init__(parent)
 
         regularFont = QFont()
         regularFont.setBold(False)
-        
+
         self.setMinimumWidth(204)
         self.setFont(regularFont)
 
-        
+
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
 
 class MyQTableWidget(QTableWidget):
     """
-    This class is used to create a personilized qtablewidget for the window
+    This class is used to create a personalized QTableWidget for the window
     """
+
     def __init__(self, parent=None):
         super(MyQTableWidget, self).__init__(parent)
         self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustIgnored)
@@ -176,48 +185,47 @@ class MyQTableWidget(QTableWidget):
         self.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.horizontalHeader().setHighlightSections(False)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
-        self.setMinimumSize(QSize(870, 400))
+        self.setMinimumSize(QSize(600, 400))
         self.verticalHeader().setVisible(False)
 
         tablePalette = QPalette()
-        tablePalette.setColor(QPalette.Inactive, QPalette.Highlight, tablePalette.color(QPalette.Active, QPalette.Highlight))
-        tablePalette.setColor(QPalette.Inactive, QPalette.HighlightedText, tablePalette.color(QPalette.Active, QPalette.HighlightedText))
+        tablePalette.setColor(QPalette.Inactive, QPalette.Highlight,
+                              tablePalette.color(QPalette.Active, QPalette.Highlight))
+        tablePalette.setColor(QPalette.Inactive, QPalette.HighlightedText,
+                              tablePalette.color(QPalette.Active, QPalette.HighlightedText))
         self.setPalette(tablePalette)
 
         tableStylesheet = "::section{ " \
-                     "           font: bold; " \
-                     "           color: white; " \
-                     "           border: 1px solid black; " \
-                     "           height: 20px; " \
-                     "           background-color: qlineargradient( " \
-                     "                      x1:0, " \
-                     "                      y1:0, " \
-                     "                      x2:0, " \
-                     "                      y2:1, " \
-                     "                      stop:0 #4C4C4C, " \
-                     "                      stop: 0.12 #595959, " \
-                     "                      stop: 0.25 #666666, " \
-                     "                      stop: 0.39 #474747, " \
-                     "                      stop: 0.5 #2C2C2C, " \
-                     "                      stop: 0.51 #000000, " \
-                     "                      stop: 0.60 #111111, " \
-                     "                      stop: 0.76 #2B2B2B, " \
-                     "                      stop: 0.91 #1C1C1C, " \
-                     "                      stop: 1 #131313);} "
+                          "           font: bold; " \
+                          "           color: white; " \
+                          "           border: 1px solid black; " \
+                          "           height: 20px; " \
+                          "           background-color: qlineargradient( " \
+                          "                      x1:0, " \
+                          "                      y1:0, " \
+                          "                      x2:0, " \
+                          "                      y2:1, " \
+                          "                      stop:0 #4C4C4C, " \
+                          "                      stop: 0.12 #595959, " \
+                          "                      stop: 0.25 #666666, " \
+                          "                      stop: 0.39 #474747, " \
+                          "                      stop: 0.5 #2C2C2C, " \
+                          "                      stop: 0.51 #000000, " \
+                          "                      stop: 0.60 #111111, " \
+                          "                      stop: 0.76 #2B2B2B, " \
+                          "                      stop: 0.91 #1C1C1C, " \
+                          "                      stop: 1 #131313);} "
 
         self.horizontalHeader().setStyleSheet(tableStylesheet)
 
         # --> Create the Items for the headers #
-        self.setColumnCount(6)
-        
+        self.setColumnCount(5)
+
         dateMaintenance = QTableWidgetItem("Data da Manutenção")
-        totalDuration = QTableWidgetItem("Duração (min)")
+        totalDuration = QTableWidgetItem("Duração")
         support = QTableWidgetItem("Suporte Responsável")
-        dtDevice = QTableWidgetItem("Código do Dispositivo")
+        dtDevice = QTableWidgetItem("DT")
         deviceDescription = QTableWidgetItem("Descrição do Dispositivo")
-        observation = QTableWidgetItem("Observação")
-
-
 
         # --> Set the Header Items #
         self.setHorizontalHeaderItem(0, dateMaintenance)
@@ -225,14 +233,12 @@ class MyQTableWidget(QTableWidget):
         self.setHorizontalHeaderItem(2, support)
         self.setHorizontalHeaderItem(3, dtDevice)
         self.setHorizontalHeaderItem(4, deviceDescription)
-        self.setHorizontalHeaderItem(5, observation)
 
         self.horizontalHeader().resizeSection(0, 150)
-        self.horizontalHeader().resizeSection(1, 120)
+        self.horizontalHeader().resizeSection(1, 100)
         self.horizontalHeader().resizeSection(2, 150)
-        self.horizontalHeader().resizeSection(3, 150)
+        self.horizontalHeader().resizeSection(3, 50)
         self.horizontalHeader().resizeSection(4, 150)
-        self.horizontalHeader().resizeSection(5, 400)
 
 
 ###############################################################################################################################################################################
@@ -246,7 +252,7 @@ class MaintenancesReportWindow(QMdiSubWindow):
     """
     # --> Constant id, used for location inside the openedSubWindows dictionary in the main window #
     SUBWINDOWID = "maintenancesreportwindow"
-    
+
     def __init__(self, parent=None):
         super(MaintenancesReportWindow, self).__init__(parent)
         self.parent = parent
@@ -258,7 +264,6 @@ class MaintenancesReportWindow(QMdiSubWindow):
 
         self.userAnsweringCall = False
 
-        
         self.updateTimer = QTimer()
 
         self.isFiltering = False
@@ -274,7 +279,7 @@ class MaintenancesReportWindow(QMdiSubWindow):
 
         regularFont = QFont()
         regularFont.setBold(False)
-        
+
         filterGroupBox = QGroupBox("Filtro")
         filterGroupBox.setFont(boldFont)
 
@@ -282,9 +287,8 @@ class MaintenancesReportWindow(QMdiSubWindow):
 
         dateMaintenanceLabel = MyQLabel("Período: ")
 
-                        
         self.fromDateField = MyQDateEdit(QDate.currentDate().addMonths(-1))
-        
+
         untilLabel = QLabel(" até ")
         untilLabel.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         untilLabel.setMinimumWidth(30)
@@ -292,14 +296,14 @@ class MaintenancesReportWindow(QMdiSubWindow):
         self.untilDateField = MyQDateEdit(QDate.currentDate())
 
         # --> Support #
-        
+
         supportLabel = MyQLabel("Colaborador: ")
         self.filterSupportField = MyQLineEdit()
-        
+
         # --> DT Device #
         dtDeviceLabel = MyQLabel("DT: ")
         self.filterDtDeviceField = MyQLineEdit()
-        
+
         # --> Device Description #
 
         deviceDescriptionLabel = MyQLabel("Dispositivo: ")
@@ -311,7 +315,6 @@ class MaintenancesReportWindow(QMdiSubWindow):
         filterButton = MyQPushButton(" Filtrar ")
         saveButton = MyQPushButton(" Salvar ")
 
-        
         # --> First row layout #
         firstRowFilterLayout = QHBoxLayout()
 
@@ -331,7 +334,6 @@ class MaintenancesReportWindow(QMdiSubWindow):
         secondRowFilterLayout.addWidget(deviceDescriptionLabel)
         secondRowFilterLayout.addWidget(self.filterDeviceDescriptionField)
 
-         
         # --> Third row Layout #
         thirdRowFilterLayout = QHBoxLayout()
 
@@ -340,36 +342,34 @@ class MaintenancesReportWindow(QMdiSubWindow):
         thirdRowFilterLayout.addWidget(filterButton)
         thirdRowFilterLayout.addWidget(saveButton)
 
-
         # --> Filter groupbox layout #
         filterLayout = QVBoxLayout()
         filterLayout.addLayout(firstRowFilterLayout)
         filterLayout.addLayout(secondRowFilterLayout)
         filterLayout.addLayout(thirdRowFilterLayout)
 
-
         filterGroupBox.setLayout(filterLayout)
 
         ##################################
         # --> Table having all the Maintenance #
         ##################################
-        
+
         self.maintenancesTable = MyQTableWidget()
-         
+
         # --> Build the listMaintenance Subwindow #
-        
+
         layout = QVBoxLayout()
-        layout.addWidget(filterGroupBox) 
+        layout.addWidget(filterGroupBox)
         layout.addWidget(self.maintenancesTable)
         layout.addStretch(1)
 
         # --> Create the centralWidget of the QMdiSubWindow and set its layout #
         centralWidget = QWidget()
         centralWidget.setLayout(layout)
-        self.setWidget(centralWidget)       
+        self.setWidget(centralWidget)
 
         # --> Connecting the signals #
-        # self.maintenancesTable.itemDoubleClicked.connect(self.openDetailedCallReportWindow)
+        self.maintenancesTable.itemDoubleClicked.connect(self.showMaintenanceDetails)
         clearFilterButton.clicked.connect(self.clearFilter)
         filterButton.clicked.connect(self.filterTable)
         # saveButton.clicked.connect(self.saveReport)
@@ -377,18 +377,35 @@ class MaintenancesReportWindow(QMdiSubWindow):
         # --> Load the subwindow data #
         self.updateMaintenancesTable()
 
-        # --> Creates a periodic event that will uplode the calls screen #
+        # --> Creates a periodic event that will update the calls screen #
         self.updateTimer.timeout.connect(self.updateMaintenancesTable)
         self.updateTimer.start(60000)
-        
+
         self.setWindowIcon(QIcon(":/prod_plan_2.png"))
         self.updateSubWindowTitle()
 
         # --> Line responsible for preventing window resize
         #self.layout().setSizeConstraint(QLayout.SetFixedSize)
-        
-###############################################################################################################################################################################
 
+    ###############################################################################################################################################################################
+    def showMaintenanceDetails(self):
+
+        maintenance = self.currentRowMaintenance()
+
+        detailMaintenanceReportWindow = detailedmaintenancereportwindow.DetailedMaintenanceReportWindow(maintenance,
+                                                                                                        self)
+        detailMaintenanceReportWindow.setModal(True)
+
+        detailMaintenanceReportWindow.show()
+
+        xPos = (self.parent.screenResolution['w'] - detailMaintenanceReportWindow.width()) / 2
+        yPos = (self.parent.screenResolution['h'] - detailMaintenanceReportWindow.height()) / 2
+
+        detailMaintenanceReportWindow.move(xPos, yPos)
+        detailMaintenanceReportWindow.raise_()
+        detailMaintenanceReportWindow.activateWindow()
+
+    ###############################################################################################################################################################################
 
     def clearFilter(self):
         """
@@ -404,11 +421,24 @@ class MaintenancesReportWindow(QMdiSubWindow):
         self.filterDtDeviceField.setText("")
         self.filterDeviceDescriptionField.setText("")
 
-
         self.updateMaintenancesTable()
 
-# ###############################################################################################################################################################################
-#
+    # ###############################################################################################################################################################################
+
+    def currentRowMaintenance(self):
+        """
+        This method returns the current selected row in the maintenance table
+        """
+        row = self.maintenancesTable.currentRow()
+        if row > -1:
+            item = self.maintenancesTable.item(row, 0)
+            key = item.data(Qt.UserRole)
+            return self.maintenancesList.maintenanceLogFromId(key)
+
+        return None
+
+    # ###############################################################################################################################################################################
+    #
 
     def filterTable(self):
         """
@@ -420,9 +450,10 @@ class MaintenancesReportWindow(QMdiSubWindow):
         fromDate = self.fromDateField.text().split("/")
         untilDate = self.untilDateField.text().split("/")
 
-        self.filteringFields.append("DATE(lmd_data_hora_inicio) >= DATE('" + fromDate[2] + "-" + fromDate[1] + "-" + fromDate[0] + "')")
-        self.filteringFields.append("DATE(lmd_data_hora_inicio) <= DATE('" + untilDate[2] + "-" + untilDate[1] + "-" + untilDate[0] + "')")
-
+        self.filteringFields.append(
+            "DATE(lmd_data_hora_inicio) >= DATE('" + fromDate[2] + "-" + fromDate[1] + "-" + fromDate[0] + "')")
+        self.filteringFields.append(
+            "DATE(lmd_data_hora_inicio) <= DATE('" + untilDate[2] + "-" + untilDate[1] + "-" + untilDate[0] + "')")
 
         if self.filterSupportField.text():
             self.filteringFields.append("col_nome LIKE '%" + self.filterSupportField.text() + "%'")
@@ -438,32 +469,9 @@ class MaintenancesReportWindow(QMdiSubWindow):
         else:
             self.isFiltering = False
 
-
         self.updateMaintenancesTable()
-#
-# ###############################################################################################################################################################################
-#
-#
-#     # def openDetailedCallReportWindow(self):
-#         """
-#         This method is called when a call is double clicked or the button "answer call" is clicked
-#         """
-#         call = self.currentRowCall()
-#
-#         detailedCallReportWindow = detailedcallreportwindow.DetailedCallReportWindow(call, self)
-#         detailedCallReportWindow.setModal(True)
-#
-#         detailedCallReportWindow.show()
-#
-#         xPos = (self.parent.screenResolution['w'] - detailedCallReportWindow.width()) / 2
-#         yPos = (self.parent.screenResolution['h'] - detailedCallReportWindow.height()) / 2
-#
-#         detailedCallReportWindow.move(xPos, yPos)
-#         detailedCallReportWindow.raise_()
-#         detailedCallReportWindow.activateWindow()
 
-
-###############################################################################################################################################################################
+    ###############################################################################################################################################################################
 
     def updateMaintenancesTable(self):
         """
@@ -503,35 +511,45 @@ class MaintenancesReportWindow(QMdiSubWindow):
             self.maintenancesTable.setItem(row, 0, item)
 
             # --> Total Duration #
-            item = QTableWidgetItem(maintenance.maintenance_log_duracao_total)
+            # Duração em minutos
+            duracao_em_minutos = int(maintenance.maintenance_log_duracao_total)
+
+            # Cálculo das horas, minutos e segundos
+            horas = duracao_em_minutos // 60
+            minutos = duracao_em_minutos % 60
+
+            # Formatando a duração
+            duracao_formatada = "{:02}:{:02}".format(horas, minutos)
+
+            # Criando o item da tabela
+            item = QTableWidgetItem(duracao_formatada)
+
+            # Definindo alinhamento e fonte
             item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             item.setFont(fontStyle)
-            if maintenance.maintenance_log_duracao_total and maintenance.maintenance_log_duracao_total > 30:
+
+            # Definindo a cor do texto se a duração for maior que 30 minutos
+            if duracao_em_minutos > 30:
                 item.setForeground(Qt.red)
-            elif maintenance.maintenance_log_duracao_total and maintenance.maintenance_log_duracao_total < 0:
-                item.setForeground(Qt.blue)
+
+            # Definindo o item na tabela
             self.maintenancesTable.setItem(row, 1, item)
 
             # --> Responsible #
             item = QTableWidgetItem(maintenance.colaborador_nome)
+            item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.maintenancesTable.setItem(row, 2, item)
 
             # --> DT #
-            item = QTableWidgetItem(maintenance.dispositivo_id)
+            item = QTableWidgetItem(str(maintenance.dispositivo_id).zfill(6))
+            item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.maintenancesTable.setItem(row, 3, item)
 
             # --> descricao_dispositivo #
             item = QTableWidgetItem(maintenance.dispositivo_descricao)
             self.maintenancesTable.setItem(row, 4, item)
 
-            # --> observacao #
-            item = QTableWidgetItem(maintenance.maintenance_log_observacao)
-            self.maintenancesTable.setItem(row, 5, item)
-
-
-
-###############################################################################################################################################################################
-
+    ###############################################################################################################################################################################
 
     def updateSubWindowTitle(self):
         """
@@ -542,11 +560,8 @@ class MaintenancesReportWindow(QMdiSubWindow):
         else:
             self.setWindowTitle("Relatório de Manutenção Preventiva - 1 Atendimento")
 
+    ###############################################################################################################################################################################
 
-
-###############################################################################################################################################################################
-   
-   
     def closeEvent(self, event):
         """
         This method remove its reference from its parent opened sub window list before being closed

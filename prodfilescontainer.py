@@ -302,7 +302,6 @@ class ProdFileOpContainer(object):
 
         # Debugging: Print SQL query before execution
         query = myDBConnection.insertQuery(table, fields, values, queryBuild=True)
-        print("SQL Query:", query)
 
         inserted, insertedId = myDBConnection.insertQuery(table, fields, values)
         if not inserted:

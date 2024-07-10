@@ -1374,6 +1374,7 @@ class CallIndicators(object):
             "cha_status = 3",
             "cha_plano = 1",
             "WEEK(cha_data_hora_abertura) = WEEK(NOW())",
+            "MONTH(cha_data_hora_abertura) = MONTH(NOW())",
             "YEAR(cha_data_hora_abertura) = YEAR(NOW())",
             "dtr_indicador > 0"
         ]
@@ -1407,6 +1408,7 @@ class CallIndicators(object):
 
         where = [
             "WEEK(pdp_data) = WEEK(NOW())",
+            "MONTH(pdp_data) = MONTH(NOW())",
             "YEAR(pdp_data) = YEAR(NOW())"
         ]
 
@@ -1430,7 +1432,7 @@ class CallIndicators(object):
         # --> CALCULATE THE MONTHLY INDICATORS #
         ########################################
 
-        # --> first calculate the monthly total number of calls, the total call answering time and the total call late time #
+        # --> first calculate the monthly total number of calls, the total ca   ll answering time and the total call late time #
 
         fields = [
             "COUNT(cha_id)",
@@ -1509,6 +1511,7 @@ class CallIndicators(object):
 
         if len(queryResult) > 0:
             if queryResult[0][0]:
+
                 uptime = 1 - ((int(totalAnsweringTime) + int(totalLateTime)) / int(queryResult[0][0]))
                 self.monthlyUpTime = "{:.2f}%".format(uptime * 100)
             else:
@@ -1553,7 +1556,7 @@ class CallsWorksheetReport(object):
             "pro_nome",
             "cha_DT",
             "cha_status",
-            "stc_descdricao",
+            "stc_descricao",
             "atc_colaborador",
             "col_nome",
             "cha_descricao",

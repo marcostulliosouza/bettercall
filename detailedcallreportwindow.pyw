@@ -30,7 +30,6 @@ import qrc_resources
 from magicDB import *
 from myExceptions import *
 
-
 __version__ = "2.0.0"
 
 
@@ -679,3 +678,4 @@ class DetailedCallReportWindow(QDialog):
 
         self.callAnswerTimeData.setText(formatedMinutesAnswering)
         self.callEndAnsweringDateDataField.setText(self.call.formatedEndDate)
+

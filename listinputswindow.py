@@ -88,6 +88,15 @@ class ListInputsWindow(QMdiSubWindow):
         self.filterPNField = QLineEdit()
         self.filterPNField.setFixedWidth(190)
         self.filterPNField.setFont(regularFont)
+
+        # SAP
+        sapLabel = QLabel("SAP: ")
+        sapLabel.setFixedWidth(110)
+        sapLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        self.filterSapField = QLineEdit()
+        self.filterSapField.setFixedWidth(190)
+        self.filterSapField.setFont(regularFont)
         
                 
         clearFilterButton = QPushButton(" Limpar ")
@@ -113,6 +122,8 @@ class ListInputsWindow(QMdiSubWindow):
         secondRowFilterLayout = QHBoxLayout()
         secondRowFilterLayout.addWidget(partNumberLabel)
         secondRowFilterLayout.addWidget(self.filterPNField)
+        secondRowFilterLayout.addWidget(sapLabel)
+        secondRowFilterLayout.addWidget(self.filterSapField)
         secondRowFilterLayout.addStretch(1)
         secondRowFilterLayout.addWidget(clearFilterButton)
         secondRowFilterLayout.addWidget(filterButton)
@@ -131,7 +142,7 @@ class ListInputsWindow(QMdiSubWindow):
         self.inventoryTable.setSizeAdjustPolicy(QAbstractScrollArea.AdjustIgnored)
         self.inventoryTable.setAlternatingRowColors(True)
         self.inventoryTable.setAutoFillBackground(True)
-        self.inventoryTable.setMinimumSize(QSize(1200, 330))
+        self.inventoryTable.setMinimumSize(QSize(1300, 330))
         self.inventoryTable.setEditTriggers(QTableWidget.NoEditTriggers)
         self.inventoryTable.setSelectionBehavior(QTableWidget.SelectRows)
         self.inventoryTable.setSelectionMode(QTableWidget.SingleSelection)
@@ -162,10 +173,13 @@ class ListInputsWindow(QMdiSubWindow):
        
         
         #Create the Items for the headers
-        self.inventoryTable.setColumnCount(6)
+        self.inventoryTable.setColumnCount(7)
 
         position = QTableWidgetItem("Posição")
         position.setSizeHint(QSize(100, 0))
+
+        sap = QTableWidgetItem("SAP")
+        sap.setSizeHint(QSize(100, 0))
 
         description = QTableWidgetItem("Descrição do Insumo")
         description.setSizeHint(QSize(450, 0))
@@ -186,11 +200,12 @@ class ListInputsWindow(QMdiSubWindow):
         
         #set the Header Items
         self.inventoryTable.setHorizontalHeaderItem(0, position)
-        self.inventoryTable.setHorizontalHeaderItem(1, description)
-        self.inventoryTable.setHorizontalHeaderItem(2, category)
-        self.inventoryTable.setHorizontalHeaderItem(3, partNumber)
-        self.inventoryTable.setHorizontalHeaderItem(4, minQuantity)
-        self.inventoryTable.setHorizontalHeaderItem(5, quantity)
+        self.inventoryTable.setHorizontalHeaderItem(1, sap)
+        self.inventoryTable.setHorizontalHeaderItem(2, description)
+        self.inventoryTable.setHorizontalHeaderItem(3, category)
+        self.inventoryTable.setHorizontalHeaderItem(4, partNumber)
+        self.inventoryTable.setHorizontalHeaderItem(5, minQuantity)
+        self.inventoryTable.setHorizontalHeaderItem(6, quantity)
 
 
         
@@ -217,9 +232,9 @@ class ListInputsWindow(QMdiSubWindow):
         #creates a periodic event that will uplode the calls screen
         
         self.setWindowIcon(QIcon(":/inventory.png"))
-        #self.updateSubWindowTitle()
+        # self.updateSubWindowTitle()
 
-             
+
 
     def verifyIfUserAnsweringCall(self):
         """
@@ -298,13 +313,13 @@ class ListInputsWindow(QMdiSubWindow):
         #QFont That determinates the apearance of the text in the table
         fontStyle = QFont()
         fontStyle.setBold(True)
-        
+
         for row, call in enumerate(self.callsList):
             #Icone
             iconLabel = QLabel()
-            
-            
-            
+
+
+
             if call.insidePlan:
                 iconLabel.setPixmap(QIcon(":/red_icon.png").pixmap(QSize(30,30)))
                 iconLabel.setToolTip("Produto está contido no plano de produção.")
@@ -313,8 +328,8 @@ class ListInputsWindow(QMdiSubWindow):
                 iconLabel.setToolTip("Produto NÃO está contido no plano de produção.")
 
             self.openedCallsTable.setCellWidget(row, 0, iconLabel)
-            
-                        
+
+
             #Duração Total
             item = QTableWidgetItem(call.formatedTotalDuration)
             item.setData(Qt.UserRole, int(call.callId))
@@ -324,7 +339,7 @@ class ListInputsWindow(QMdiSubWindow):
                 item.setForeground(Qt.red)
             elif call.totalDuration and call.totalDuration < 0:
                 item.setForeground(Qt.blue)
-                
+
             self.openedCallsTable.setItem(row, 1, item)
 
             #Duração Atendimento
@@ -339,7 +354,7 @@ class ListInputsWindow(QMdiSubWindow):
             #Aberto por
             item = QTableWidgetItem(call.creator)
             self.openedCallsTable.setItem(row, 3, item)
-        
+
             #Tipo de Chamado
             item = QTableWidgetItem(call.callType)
             self.openedCallsTable.setItem(row, 4, item)

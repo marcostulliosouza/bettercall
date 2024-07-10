@@ -311,6 +311,7 @@ class DeviceMaintenanceWindow(QDialog):
         # --> Buttons #
 
         self.beginMaintenanceButton = MyQPushButton(" Iniciar ")
+        self.closeButton = MyQPushButton(" Fechar ")
         self.cancelButton = MyQPushButton(" Cancelar ")
         self.finishMaintenanceButton = MyQPushButton(" Finalizar ")
         self.finishMaintenanceButton.setEnabled(False)
@@ -319,7 +320,7 @@ class DeviceMaintenanceWindow(QDialog):
         buttonLayout.addStretch(1)
         buttonLayout.addWidget(self.beginMaintenanceButton)
         buttonLayout.addWidget(self.finishMaintenanceButton)
-        buttonLayout.addWidget(self.cancelButton)
+        buttonLayout.addWidget(self.closeButton)
         buttonLayout.addStretch(1)
 
 
@@ -343,11 +344,57 @@ class DeviceMaintenanceWindow(QDialog):
         #### SIGNALS AND SLOTS ####
         ###########################
 
-        self.cancelButton.clicked.connect(self.close)
+        self.closeButton.clicked.connect(self.close)
+        self.cancelButton.clicked.connect(self.cancelMaintenance())
         self.beginMaintenanceButton.clicked.connect(self.beginMaintenance)
         self.finishMaintenanceButton.clicked.connect(self.endMaintenance)
 
+    ###############################################################################################################################################################################
+    def cancelMaintenance(self):
+        """
+        This method is used to cancel the maintenance.
+        """
+        messageBox = QMessageBox()
+        messageBox.setIcon(QMessageBox.Question)
+        messageBox.setWindowIcon(QIcon(":/question.png"))
+        messageBox.setWindowTitle("Cancelar Manutenção?")
+        messageBox.setText("Deseja realmente cancelar esta manutenção preventiva?")
+        messageBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
 
+        messageBox.button(QMessageBox.Yes).setText("Sim")
+        messageBox.button(QMessageBox.Yes).setCursor(QCursor(Qt.PointingHandCursor))
+
+        messageBox.button(QMessageBox.No).setText("Não")
+        messageBox.button(QMessageBox.No).setCursor(QCursor(Qt.PointingHandCursor))
+
+        messageBox.exec_()
+
+        # If the Yes button was clicked
+        if messageBox.clickedButton() == messageBox.button(QMessageBox.No):
+            return
+
+        try:
+            self.maintenanceLog.cancelMaintenance()
+        except DatabaseConnectionError as error:
+            place, cause = error.args
+            message = "Falha em: " + place + "\nErro: " + cause
+
+            messageBox = QMessageBox()
+            messageBox.setText(message)
+            messageBox.setWindowTitle("Erro!")
+            messageBox.setIcon(QMessageBox.Critical)
+            messageBox.setWindowIcon(QIcon(":/warning_icon.png"))
+            messageBox.exec_()
+            return
+
+        messageBox = QMessageBox()
+        messageBox.setText("Manutenção cancelada com sucesso!")
+        messageBox.setWindowTitle("Sucesso!")
+        messageBox.setIcon(QMessageBox.Information)
+        messageBox.setWindowIcon(QIcon(":/maintenance.png"))
+        messageBox.exec_()
+
+        self.close()
 ###############################################################################################################################################################################
     def endMaintenance(self):
         """
@@ -423,12 +470,13 @@ class DeviceMaintenanceWindow(QDialog):
         self.updateClock()
         if not self.maintenanceLog.maintenanceLogId:
             self.beginMaintenanceButton.setEnabled(True)
-            self.cancelButton.setEnabled(True)
+            self.closeButton.setEnabled(True)
             self.finishMaintenanceButton.setVisible(False)
         else:
             self.maintenanceFormGroupBox.setEnabled(True)
             self.beginMaintenanceButton.setVisible(False)
-            self.cancelButton.setVisible(False)
+            self.closeButton.setVisible(False)
+            self.cancelButton.setVisible(True)
             self.finishMaintenanceButton.setVisible(True)
             self.maintenanceObservationField.setEnabled(True)
             

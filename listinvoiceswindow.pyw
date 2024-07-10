@@ -637,7 +637,7 @@ class ListInvoicesWindow(QMdiSubWindow):
             if invoice.invoiceHasReturn:
                 if invoice.remainingDays >= 7:
                     brush = greenBrush
-                elif invoice.remainingDays >= 0:
+                elif invoice.remainingDays == 0:
                     brush = yellowBrush
                 else:
                     brush = redBrush

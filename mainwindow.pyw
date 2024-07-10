@@ -89,7 +89,7 @@ from myExceptions import *
 myappid = u'bettercalltest'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 QCoreApplication.setOrganizationName("Hi-mix")
 QCoreApplication.setOrganizationDomain("himix.com")
@@ -336,9 +336,9 @@ class MainWindow(QMainWindow):
      
 
         # --> Insumos #
-        #self.inputsMenu = self.menuBar().addMenu("I&nsumos")
-        #self.inputsMenu.addAction(self.inputs_listInputsAction)
-        #self.inputsMenu.addAction(self.input_editCategoriesAction)
+        self.inputsMenu = self.menuBar().addMenu("I&nsumos")
+        self.inputsMenu.addAction(self.inputs_listInputsAction)
+        self.inputsMenu.addAction(self.input_editCategoriesAction)
 
         # Relatorios
         self.reportsMenu = self.menuBar().addMenu("&Relatórios")
